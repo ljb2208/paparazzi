@@ -20,8 +20,6 @@ AHRS_SRCS   += subsystems/ahrs/ahrs_aligner.c
 ap.CFLAGS += $(AHRS_CFLAGS)
 ap.srcs += $(AHRS_SRCS)
 
-sim.CFLAGS += $(AHRS_CFLAGS)
-sim.srcs += $(AHRS_SRCS)
 
 
 # Extra stuff for fixedwings
@@ -43,3 +41,18 @@ endif
 ap.CFLAGS += -DAHRS_PROPAGATE_FREQUENCY=$(AHRS_PROPAGATE_FREQUENCY)
 ap.CFLAGS += -DAHRS_CORRECT_FREQUENCY=$(AHRS_CORRECT_FREQUENCY)
 
+
+#
+# Simple simulation of the AHRS result
+#
+ahrssim_CFLAGS  = -DAHRS_TYPE_H=\"subsystems/ahrs/ahrs_sim.h\"
+ahrssim_CFLAGS += -DUSE_AHRS -DAHRS_UPDATE_FW_ESTIMATOR
+
+ahrssim_srcs    = $(SRC_SUBSYSTEMS)/ahrs.c
+ahrssim_srcs   += $(SRC_SUBSYSTEMS)/ahrs/ahrs_sim.c
+
+sim.CFLAGS += $(ahrssim_CFLAGS)
+sim.srcs += $(ahrssim_srcs)
+
+jsbsim.CFLAGS += $(ahrssim_CFLAGS)
+jsbsim.srcs += $(ahrssim_srcs)

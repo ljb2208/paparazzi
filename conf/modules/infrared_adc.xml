@@ -6,7 +6,7 @@
   </header>
   <init fun="infrared_adc_init()"/>
   <periodic fun="infrared_adc_update()" freq="60."/>
-  <makefile>
+  <makefile target="ap|sim|jsbsim">
     <define name="USE_INFRARED_TELEMETRY"/>
     <file name="infrared.c" dir="subsystems/sensors"/>
     <file name="infrared_adc.c" dir="subsystems/sensors"/>
@@ -34,9 +34,6 @@ endif
 
 ap.CFLAGS += -DADC_CHANNEL_IR_NB_SAMPLES=$(ADC_IR_NB_SAMPLES)
     </raw>
-  </makefile>
-  <makefile target="sim">
-    <file_arch name="sim_ir.c" dir="."/>
   </makefile>
 </module>
 
