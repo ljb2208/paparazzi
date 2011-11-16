@@ -49,32 +49,42 @@
     <define name="GYRO_PR_SENS" value="0.0" integer="16"/>
     <define name="GYRO_QR_SENS" value="0.0" integer="16"/>
     
-    <define name="ACCEL_X_NEUTRAL" value="8"/>
+<!--    <define name="ACCEL_X_NEUTRAL" value="8"/>
     <define name="ACCEL_Y_NEUTRAL" value="-3"/>
     <define name="ACCEL_Z_NEUTRAL" value="4"/>
     <define name="ACCEL_X_SENS" value="38.4119664818" integer="16"/>
     <define name="ACCEL_Y_SENS" value="38.1506447856" integer="16"/>
-    <define name="ACCEL_Z_SENS" value="39.1961591795" integer="16"/>
+    <define name="ACCEL_Z_SENS" value="39.1961591795" integer="16"/>  -->
+
+<define name="ACCEL_X_NEUTRAL" value="5"/>
+<define name="ACCEL_Y_NEUTRAL" value="-5"/>
+<define name="ACCEL_Z_NEUTRAL" value="-4"/>
+<define name="ACCEL_X_SENS" value="38.4786599533" integer="16"/>
+<define name="ACCEL_Y_SENS" value="38.2196158761" integer="16"/>
+<define name="ACCEL_Z_SENS" value="39.3032925231" integer="16"/>
+
     <define name="ACCEL_XY_SENS" value="0.0" integer="16"/>
     <define name="ACCEL_XZ_SENS" value="0.0" integer="16"/>
     <define name="ACCEL_YZ_SENS" value="0.0" integer="16"/>
-    
+
     <define name="MAG_X_NEUTRAL" value="-78"/>
     <define name="MAG_Y_NEUTRAL" value="27"/>
     <define name="MAG_Z_NEUTRAL" value="-96"/>
     <define name="MAG_X_SENS" value="4.05974525723" integer="16"/>
     <define name="MAG_Y_SENS" value="4.20848254405" integer="16"/>
-    <define name="MAG_Z_SENS" value="4.00874100997" integer="16"/>
+    <define name="MAG_Z_SENS" value="4.00874100997" integer="16"/> 
+
+<!-- My calib 
+<define name="MAG_X_NEUTRAL" value="-67"/>
+<define name="MAG_Y_NEUTRAL" value="7"/>
+<define name="MAG_Z_NEUTRAL" value="-125"/>
+<define name="MAG_X_SENS" value="5.68695608208" integer="16"/>
+<define name="MAG_Y_SENS" value="5.53610297596" integer="16"/>
+<define name="MAG_Z_SENS" value="5.15202188191" integer="16"/>
+-->
     <define name="MAG_XY_SENS" value="0.0" integer="16"/>
     <define name="MAG_XZ_SENS" value="0.0" integer="16"/>
     <define name="MAG_YZ_SENS" value="0.0" integer="16"/>
-
-<!-- Added for Sim build. Not sure if required -->
-    <define name="BODY_TO_IMU_PHI"   value="RadOfDeg(   0. )"/>
-    <define name="BODY_TO_IMU_THETA" value="RadOfDeg(   0. )"/>
-    <define name="BODY_TO_IMU_PSI"   value="RadOfDeg( 135.)"/>
-
-
   </section>
 
  <section name="AUTOPILOT">
@@ -166,9 +176,9 @@
 
   <section name="AHRS" prefix="AHRS_">
     <define name="PROPAGATE_FREQUENCY" value="512"/>
-    <define name="H_X" value=" 0.9627907"/>
-    <define name="H_Y" value=" 0.0036997"/>
-    <define name="H_Z" value=" - 0.2702228"/>
+    <define name="H_X" value=" 0.9650205"/>
+    <define name="H_Y" value=" 0.0036869"/>
+    <define name="H_Z" value=" -0.2621484"/>
   </section>
 
 
@@ -256,7 +266,7 @@
     </subsystem>-->
     <!--subsystem name="ahrs"          type="int_cmpl_euler"/-->
     <subsystem name="stabilization"   type="euler"/>
-    <subsystem name="ahrs"          type="int_cmpl_quat"/>
+    <subsystem name="ahrs"          type="int_cmpl_euler"/>
     <subsystem name="ins"           type="hff"/>
   </firmware>
 
