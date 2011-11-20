@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<launchConfiguration type="org.eclipse.dltk.python.launching.PythonLaunchConfigurationType">
+<booleanAttribute key="enableBreakOnFirstLine" value="false"/>
+<booleanAttribute key="enableDbgpLogging" value="false"/>
+<stringAttribute key="mainScript" value="calibrate.py"/>
+<stringAttribute key="nature" value="org.eclipse.dltk.python.core.nature"/>
+<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
+<listEntry value="/Debug Scripts/calibrate.py"/>
+</listAttribute>
+<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
+<listEntry value="1"/>
+</listAttribute>
+<stringAttribute key="process_factory_id" value="org.eclipse.dltk.launching.scriptProcessFactory"/>
+<stringAttribute key="project" value="Debug Scripts"/>
+<stringAttribute key="scriptArguments" value="-i 2 -s ACCEL  ~/development/paparazzi/var/logs/11_11_14__20_44_07.data -v"/>
+</launchConfiguration>

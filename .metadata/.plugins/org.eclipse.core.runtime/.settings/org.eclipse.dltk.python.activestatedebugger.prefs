@@ -1,0 +1,6 @@
+#Tue Nov 15 16:44:06 PST 2011
+activeStateEnginePath=org.eclipse.dltk.core.environment.localEnvironment/\:/home/lbarnett/Komodo-IDE-6/lib/support/dbgp/bin/pydbgp
+log_file_path=
+eclipse.preferences.version=1
+enable_logging=false
+log_file_name=pythonDebug_{0}.log
