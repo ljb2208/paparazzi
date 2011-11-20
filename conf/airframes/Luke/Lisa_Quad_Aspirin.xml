@@ -33,7 +33,8 @@
     <define name="SCALE" value="256"/>
     <define name="ROLL_COEF"   value="{ -256, -256,  256,  256 }"/>
     <define name="PITCH_COEF"  value="{  256, -256, -256,  256 }"/>
-    <define name="YAW_COEF"    value="{  256, -256,  256, -256 }"/>
+<!--    <define name="YAW_COEF"    value="{  256, -256,  256, -256 }"/> -->
+    <define name="YAW_COEF"    value="{  -256, 256,  -256, 256 }"/>
     <define name="THRUST_COEF" value="{  256,  256,  256,  256 }"/>
   </section>
 
@@ -136,24 +137,6 @@
     <define name="REF_MAX_R"    value="RadOfDeg(180.)"/>
     <define name="REF_MAX_RDOT" value="RadOfDeg(1800.)"/>
 
-   <!--  gaui props
-    <define name="PHI_PGAIN"  value="-900"/>
-    <define name="PHI_DGAIN"  value="-200"/>
-    <define name="PHI_IGAIN"  value="-200"/>
-
-    <define name="THETA_PGAIN"  value="-900"/>
-    <define name="THETA_DGAIN"  value="-200"/>
-    <define name="THETA_IGAIN"  value="-200"/>
-
-    <define name="PSI_PGAIN"  value="-900"/>
-    <define name="PSI_DGAIN"  value="-200"/>
-    <define name="PSI_IGAIN"  value="-10"/>
-
-    <define name="PHI_DDGAIN"   value=" 200"/>
-    <define name="THETA_DDGAIN" value=" 200"/>
-    <define name="PSI_DDGAIN"   value=" 200"/>
-  -->
-
     <!-- feedback -->
     <define name="PHI_PGAIN"  value="-2000"/>
     <define name="PHI_DGAIN"  value="-400"/>
@@ -248,7 +231,7 @@
 	<define name="RADIO_MODE" value="RADIO_AUX2" />
 	<define name="RADIO_KILL_SWITCH" value="RADIO_GEAR" /> 
 <!--	<define name="RADIO_CONTROL_SPEKTRUM_SIGNS" value="\{-1,1,1,1,1,1,1,1,1\}" /> -->
-	<define name="RADIO_CONTROL_SPEKTRUM_SIGNS" value="\{1,1,1,1,1,1,1,1,1\}" />
+	<define name="RADIO_CONTROL_SPEKTRUM_SIGNS" value="\{1,1,-1,1,1,1,1,1,1\}" />
 	<define name = "RADIO_CONTROL_SPEKTRUM_SECONDARY_PORT" value = "UART5"/>
 	<define name = "OVERRIDE_UART5_IRQ_HANDLER"/>
 <!--	<define name="RC_SPK_SYNC_2" value="0x12" /> -->
