@@ -86,6 +86,11 @@
     <define name="MAG_XY_SENS" value="0.0" integer="16"/>
     <define name="MAG_XZ_SENS" value="0.0" integer="16"/>
     <define name="MAG_YZ_SENS" value="0.0" integer="16"/>
+
+    <define name="BODY_TO_IMU_PHI"   value="RadOfDeg(   0. )"/>
+    <define name="BODY_TO_IMU_THETA" value="RadOfDeg(   0. )"/>
+    <define name="BODY_TO_IMU_PSI"   value="RadOfDeg(   0. )"/>
+
   </section>
 
  <section name="AUTOPILOT">
@@ -107,9 +112,9 @@
     <define name="SP_MAX_Q" value="10000"/>
     <define name="SP_MAX_R" value="10000"/>
 
-    <define name="GAIN_P" value="-400"/>
-    <define name="GAIN_Q" value="-400"/>
-    <define name="GAIN_R" value="-350"/>
+    <define name="GAIN_P" value="-250"/>
+    <define name="GAIN_Q" value="-250"/>
+    <define name="GAIN_R" value="-250"/>
 
   </section>
 
@@ -238,9 +243,11 @@
     </target>
     <target name="sim" board="pc">
       <subsystem name="fdm"           type="nps"/>
+
       <subsystem name="radio_control" type="ppm"/>
       <subsystem name="actuators"     type="mkk"/>
       <subsystem name="imu"           type="b2_v1.1"/> <!-- use original imu for simulation -->
+
     </target>
     <subsystem name="telemetry"     type="transparent"/>
 

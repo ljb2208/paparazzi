@@ -40,6 +40,9 @@
 
 /paparazzi
 
+/.metadata
+/sw/.metadata
+
 # /conf/
 # /conf/conf.xml
 /conf/conf.xml.20*
