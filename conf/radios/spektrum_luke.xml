@@ -48,7 +48,7 @@
  <channel ctl="right_stick_horiz" function="ROLL"    max="2050" neutral="1500" min="950" average="0"/>
  <channel ctl="right_stick_vert" function="THROTTLE"     max="2050" neutral="1500" min="950" average="0"/>
  <channel ctl="left_stick_horiz" function="YAW" min="950" neutral="1500" max="2050" average="0"/>
- <channel ctl="switch_GEAR" function="KILL"    max="2050" neutral="1500" min="950" average="1"/>
+ <channel ctl="GEAR" function="KILL"    max="2050" neutral="1500" min="950" average="1"/>
  <channel ctl="switch_AUX2" function="MODE"    max="2050" neutral="1500" min="950" average="1"/>
  <channel ctl="G" function="UNUSED"     max="2050" neutral="1500" min="950" average="1"/>
  <channel ctl="H" function="UNUSED"    max="2050" neutral="1500" min="950" average="1"/>
