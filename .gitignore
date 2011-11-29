@@ -40,6 +40,10 @@
 
 /paparazzi
 
+/.metadata
+/sw/.metadata
+/RemoteSystem*
+
 # /conf/
 /conf/conf.xml
 /conf/conf.xml.20*
