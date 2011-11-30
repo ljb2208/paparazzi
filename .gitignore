@@ -38,6 +38,8 @@
 /var
 /dox
 
+/RemoteSystemsTempFiles
+
 /paparazzi
 
 /.metadata
