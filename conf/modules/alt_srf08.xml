@@ -13,5 +13,7 @@
   <makefile>
     <file name="alt_srf08.c"/>
     <define name="TELEMETER"/>
+    <define name="USE_I2C1" />
+    <define name="SRF08_I2C_DEV" value="i2c1" />
   </makefile>
 </module>
