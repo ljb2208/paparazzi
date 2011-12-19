@@ -59,10 +59,10 @@
 
 #define SRF08_I2C_BROADCAST_ADDRESS   0X00
 
-#define SRF08_MIN_GAIN        0      /* sets gain to 94   */
-#define SRF08_MAX_GAIN        31     /* sets gain to 1025 */
-#define SRF08_MIN_RANGE       0      /* in millimeters    */
-#define SRF08_MAX_RANGE       11008  /* in millimeters    */
+// see http://www.robot-electronics.co.uk/htm/srf08tech.shtml
+// for information on range and gains.
+#define SRF08_RANGE			  0x8C		/* in millimeters	*/
+#define SRF08_GAIN			  0x11			/* 0 to 31 */
 
 #define SRF08_INCHES          0X50
 #define SRF08_CENTIMETERS     0X51
@@ -71,6 +71,7 @@
 /* register positions */
 #define SRF08_COMMAND         0
 #define SRF08_SET_GAIN        1
+#define SRF08_SET_RANGE       2
 #define SRF08_LIGHT           1
 #define SRF08_ECHO_1          2
 #define SRF08_ECHO_2          4

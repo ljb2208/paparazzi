@@ -59,9 +59,14 @@ void srf08_init(void)
   srf_trans.buf[1] = 0x51;
   I2CTransmit(SRF08_I2C_DEV, srf_trans, SRF08_UNIT_0, 2);
 
-  /** Setting the gain to the minimun value (to avoid echos ?) */
+  /* set gain to specified value */
   srf_trans.buf[0] = SRF08_SET_GAIN;
-  srf_trans.buf[1] = SRF08_MIN_GAIN;
+  srf_trans.buf[1] = SRF08_GAIN;
+  I2CTransmit(SRF08_I2C_DEV, srf_trans, SRF08_UNIT_0, 2);
+
+  /* set gain to specified value */
+  srf_trans.buf[0] = SRF08_SET_RANGE;
+  srf_trans.buf[1] = SRF08_RANGE;
   I2CTransmit(SRF08_I2C_DEV, srf_trans, SRF08_UNIT_0, 2);
 
   return;
