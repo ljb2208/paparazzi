@@ -79,6 +79,7 @@
     <define name="MAG_X_NEUTRAL" value="-78"/>
     <define name="MAG_Y_NEUTRAL" value="27"/>
     <define name="MAG_Z_NEUTRAL" value="-96"/>
+
     <define name="MAG_X_SENS" value="4.05974525723" integer="16"/>
     <define name="MAG_Y_SENS" value="4.20848254405" integer="16"/>
     <define name="MAG_Z_SENS" value="4.00874100997" integer="16"/> 
@@ -176,9 +177,22 @@
 
   <section name="AHRS" prefix="AHRS_">
     <define name="PROPAGATE_FREQUENCY" value="512"/>
+<!-- Singapore
     <define name="H_X" value=" 0.9650205"/>
     <define name="H_Y" value=" 0.0036869"/>
     <define name="H_Z" value=" -0.2621484"/>
+-->
+<!-- Sydney -->	
+    <define name="H_X" value=" 0.4231032"/>
+    <define name="H_Y" value=" 0.0935315"/>
+    <define name="H_Z" value=" -0.9012411"/>
+
+<!-- Brisbane
+
+	<define name="H_X" value=" 0.52828"/>
+    <define name="H_Y" value=" 0.1024777"/>
+    <define name="H_Z" value=" -0.8428633"/>
+-->
   </section>
 
 
@@ -243,7 +257,7 @@
      <target name="ap" board="lisa_l_1.1">
       <subsystem name="radio_control" type="spektrum" />
       <subsystem name="actuators"     type="pwm_supervision"/>
-      <subsystem name="imu"           type="aspirin"/>	
+      <subsystem name="imu"           type="aspirin_v1.5"/>	
 	<define name="SERVO_HZ" value="400"/>
 	<define name="RADIO_CONTROL_NB_CHANNEL" value="9" />
 	<define name="RADIO_MODE" value="RADIO_AUX2" />
@@ -282,7 +296,9 @@
     <target name="test_baro"                board="lisa_l_1.1"/>
     <target name="test_imu_b2"              board="lisa_l_1.1"/>
     <target name="test_imu_b2_2"            board="lisa_l_1.1"/>
-    <target name="test_imu_aspirin"         board="lisa_l_1.1"/>
+    <target name="test_imu_aspirin"         board="lisa_l_1.1">
+	<define name="IMU_ASPIRIN_VERSION_1_5" value="1" />
+	</target>
     <target name="test_rc_spektrum"         board="lisa_l_1.1">
 	<define name="RADIO_CONTROL_NB_CHANNEL" value="9" />
 	<define name="RADIO_MODE" value="RADIO_AUX2" />

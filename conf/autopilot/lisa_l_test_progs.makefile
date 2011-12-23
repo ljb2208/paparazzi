@@ -392,7 +392,7 @@ test_imu_b2_2.srcs   += $(IMU_B2_2_SRCS)
 #
 # test IMU aspirin
 #
-IMU_ASPIRIN_CFLAGS = -DIMU_TYPE_H=\"imu/imu_aspirin.h\" -DIMU_OVERRIDE_CHANNELS
+IMU_ASPIRIN_CFLAGS = -DIMU_TYPE_H=\"imu/imu_aspirin.h\" -DIMU_OVERRIDE_CHANNELS -DIMU_ASPIRIN_VERSION_1_5
 IMU_ASPIRIN_SRCS   = $(SRC_SUBSYSTEMS)/imu.c             \
                      $(SRC_SUBSYSTEMS)/imu/imu_aspirin.c \
                      $(SRC_ARCH)/subsystems/imu/imu_aspirin_arch.c
@@ -572,6 +572,33 @@ test_adxl345.srcs += downlink.c pprz_transport.c
 test_adxl345.CFLAGS += -DUSE_EXTI2_IRQ   # Accel Int on PD2
 test_adxl345.CFLAGS += -DUSE_DMA1_C4_IRQ # SPI2 Rx DMA
 
+#
+# test adxl345 without DMA
+#
+test_adxl345_nodma.ARCHDIR = $(ARCH)
+test_adxl345_nodma.CFLAGS  = -I$(SRC_FIRMWARE) -I$(SRC_LISA) -I$(ARCH) -I$(SRC_BOOZ) -I$(SRC_BOOZ_ARCH) -DPERIPHERALS_AUTO_INIT
+test_adxl345_nodma.CFLAGS +=  -DBOARD_CONFIG=$(BOARD_CFG)
+test_adxl345_nodma.srcs += $(SRC_AIRBORNE)/mcu.c \
+                 $(SRC_ARCH)/mcu_arch.c \
+                 lisa/test/lisa_test_adxl345.c \
+                     $(SRC_ARCH)/stm32_exceptions.c   \
+		     $(SRC_ARCH)/stm32_vector_table.c
+
+test_adxl345_nodma.CFLAGS += -DUSE_LED
+test_adxl345_nodma.srcs += $(SRC_ARCH)/led_hw.c
+
+test_adxl345_nodma.CFLAGS += -DUSE_SYS_TIME -DSYS_TIME_LED=1
+test_adxl345_nodma.CFLAGS += -DPERIODIC_TASK_PERIOD='SYS_TICS_OF_SEC((1./512.))'
+test_adxl345_nodma.srcs += sys_time.c $(SRC_ARCH)/sys_time_hw.c
+
+test_adxl345_nodma.CFLAGS += -DUSE_UART2 -DUART2_BAUD=B57600
+test_adxl345_nodma.srcs += mcu_periph/uart.c
+test_adxl345_nodma.srcs += $(SRC_ARCH)/mcu_periph/uart_arch.c
+
+test_adxl345_nodma.CFLAGS += -DDOWNLINK -DDOWNLINK_TRANSPORT=PprzTransport -DDOWNLINK_DEVICE=Uart2
+test_adxl345_nodma.srcs += downlink.c pprz_transport.c
+
+test_adxl345_nodma.CFLAGS += -DUSE_EXTI2_IRQ   # Accel Int on PD2
 
 
 #

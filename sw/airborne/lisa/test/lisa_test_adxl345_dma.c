@@ -30,19 +30,22 @@
 
 #include BOARD_CONFIG
 #include "mcu.h"
+#include "mcu_periph/uart.h"
 #include "sys_time.h"
 #include "downlink.h"
 
 #include "peripherals/adxl345.h"
-#include "my_debug_servo.h"
+//#include "my_debug_servo.h"
 
 static inline void main_init( void );
 static inline void main_periodic_task( void );
 static inline void main_event_task( void );
 
 static inline void main_init_hw(void);
+static inline void enable_hw(void);
 
-void exti2_irq_handler(void);
+extern void exti2_irq_handler(void);
+extern void exti4_irq_handler(void);
 void dma1_c4_irq_handler(void);
 
 int main(void) {
@@ -61,7 +64,7 @@ static inline void main_init( void ) {
   mcu_init();
   sys_time_init();
   main_init_hw();
-
+  enable_hw();
 }
 
 static void write_to_reg(uint8_t addr, uint8_t val);
@@ -155,9 +158,7 @@ static void read_data(void) {
 
 }
 
-
 static inline void main_periodic_task( void ) {
-
 
   RunOnceEvery(10,
     {
@@ -179,7 +180,7 @@ static inline void main_periodic_task( void ) {
     /* Enable full res and interrupt active low */
     write_to_reg(ADXL345_REG_DATA_FORMAT, 1<<3|1<<5);
     /* reads data once to bring interrupt line up */
-    uint8_t ret = SPI_I2S_ReceiveData(SPI2);
+    uint8_t __attribute__ ((unused)) ret = SPI_I2S_ReceiveData(SPI2);
     read_data();
     acc_status = CONFIGURED;
   }
@@ -207,6 +208,7 @@ static inline void main_init_hw( void ) {
   /* configure acc slave select */
   /* set acc slave select as output and assert it ( on PB12) */
   AccUnselect();
+
   RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);
   GPIO_InitTypeDef GPIO_InitStructure;
   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_12;
@@ -215,25 +217,19 @@ static inline void main_init_hw( void ) {
   GPIO_Init(GPIOB, &GPIO_InitStructure);
 
   /* configure external interrupt exti2 on PD2( accel int ) */
-  RCC_APB2PeriphClockCmd(IMU_ACC_DRDY_RCC_GPIO | RCC_APB2Periph_AFIO, ENABLE);
+  RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB | RCC_APB2Periph_AFIO, ENABLE);
   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_2;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-  GPIO_Init(IMU_ACC_DRDY_GPIO, &GPIO_InitStructure);
+  //GPIO_Init(IMU_ACC_DRDY_GPIO, &GPIO_InitStructure);
+  GPIO_Init(GPIOB, &GPIO_InitStructure);
   EXTI_InitTypeDef EXTI_InitStructure;
-  GPIO_EXTILineConfig(IMU_ACC_DRDY_GPIO_PORTSOURCE, GPIO_PinSource2);
+  GPIO_EXTILineConfig(GPIO_PortSourceGPIOB, GPIO_PinSource2);
   EXTI_InitStructure.EXTI_Line = EXTI_Line2;
   EXTI_InitStructure.EXTI_Mode = EXTI_Mode_Interrupt;
   EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Falling;
   EXTI_InitStructure.EXTI_LineCmd = ENABLE;
   EXTI_Init(&EXTI_InitStructure);
-  NVIC_InitTypeDef NVIC_InitStructure;
-  NVIC_InitStructure.NVIC_IRQChannel = EXTI2_IRQn;
-  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0x0F;
-  NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0x0F;
-  NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
-  NVIC_Init(&NVIC_InitStructure);
-
 
   /* Enable SPI2 Periph clock -------------------------------------------------*/
   RCC_APB1PeriphClockCmd(RCC_APB1Periph_SPI2, ENABLE);
@@ -260,19 +256,30 @@ static inline void main_init_hw( void ) {
   SPI_InitStructure.SPI_CRCPolynomial = 7;
   SPI_Init(SPI2, &SPI_InitStructure);
 
-  /* Enable DMA1 channel4 IRQ Channel ( SPI RX) */
-  NVIC_InitTypeDef NVIC_init_struct = {
-    .NVIC_IRQChannel = DMA1_Channel4_IRQn,
-    .NVIC_IRQChannelPreemptionPriority = 0,
-    .NVIC_IRQChannelSubPriority = 0,
-    .NVIC_IRQChannelCmd = ENABLE
-  };
-  NVIC_Init(&NVIC_init_struct);
 
   /* Enable SPI_2 DMA clock ---------------------------------------------------*/
   RCC_AHBPeriphClockCmd(RCC_AHBPeriph_DMA1, ENABLE);
 
-  DEBUG_SERVO2_INIT();
+  //DEBUG_SERVO2_INIT();
+
+}
+
+static inline void enable_hw( void ) {
+	NVIC_InitTypeDef NVIC_InitStructure;
+	  NVIC_InitStructure.NVIC_IRQChannel = EXTI2_IRQn;
+	  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0x0F;
+	  NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0x0F;
+	  NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+	  NVIC_Init(&NVIC_InitStructure);
+
+	  /* Enable DMA1 channel4 IRQ Channel ( SPI RX) */
+	   NVIC_InitTypeDef NVIC_init_struct = {
+	     .NVIC_IRQChannel = DMA1_Channel4_IRQn,
+	     .NVIC_IRQChannelPreemptionPriority = 0,
+	     .NVIC_IRQChannelSubPriority = 0,
+	     .NVIC_IRQChannelCmd = ENABLE
+	   };
+	   NVIC_Init(&NVIC_init_struct);
 
 }
 
@@ -283,7 +290,19 @@ void exti2_irq_handler(void) {
   if(EXTI_GetITStatus(EXTI_Line2) != RESET)
     EXTI_ClearITPendingBit(EXTI_Line2);
 
-  DEBUG_S4_TOGGLE();
+  //DEBUG_S4_TOGGLE();
+
+  read_data();
+
+}
+
+void exti4_irq_handler(void) {
+
+  /* clear EXTI */
+  if(EXTI_GetITStatus(EXTI_Line2) != RESET)
+    EXTI_ClearITPendingBit(EXTI_Line2);
+
+  //DEBUG_S4_TOGGLE();
 
   read_data();
 
@@ -291,6 +310,15 @@ void exti2_irq_handler(void) {
 
 void dma1_c4_irq_handler(void) {
   AccUnselect();
+
+  if (DMA_GetITStatus(DMA1_IT_TC4)) {
+  		// clear int pending bit
+  		DMA_ClearITPendingBit(DMA1_IT_GL4);
+
+      // mark as available
+  		acc_data_available = TRUE;
+  	}
+
   DMA_ITConfig(DMA1_Channel4, DMA_IT_TC, DISABLE);
   /* Disable SPI_2 Rx and TX request */
   SPI_I2S_DMACmd(SPI2, SPI_I2S_DMAReq_Rx, DISABLE);
@@ -298,6 +326,4 @@ void dma1_c4_irq_handler(void) {
   /* Disable DMA1 Channel4 and 5 */
   DMA_Cmd(DMA1_Channel4, DISABLE);
   DMA_Cmd(DMA1_Channel5, DISABLE);
-
-  acc_data_available = TRUE;
 }
