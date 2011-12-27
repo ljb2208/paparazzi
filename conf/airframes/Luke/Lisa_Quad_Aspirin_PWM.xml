@@ -299,6 +299,15 @@
     <target name="test_imu_aspirin"         board="lisa_l_1.1">
 	<define name="IMU_ASPIRIN_VERSION_1_5" value="1" />
 	</target>
+    <target name="test_imu_aspirin_no_mag"         board="lisa_l_1.1">
+	<define name="IMU_ASPIRIN_VERSION_1_5" value="1" />
+	</target>
+    <target name="test_imu_aspirin_no_gyro"         board="lisa_l_1.1">
+	<define name="IMU_ASPIRIN_VERSION_1_5" value="1" />
+	</target>
+    <target name="test_imu_aspirin_no_mag_no_gyro"         board="lisa_l_1.1">
+	<define name="IMU_ASPIRIN_VERSION_1_5" value="1" />
+	</target>
     <target name="test_rc_spektrum"         board="lisa_l_1.1">
 	<define name="RADIO_CONTROL_NB_CHANNEL" value="9" />
 	<define name="RADIO_MODE" value="RADIO_AUX2" />
@@ -312,6 +321,7 @@
     <target name="test_hmc5843"             board="lisa_l_1.1"/>
     <target name="test_itg3200"             board="lisa_l_1.1"/>
     <target name="test_adxl345"             board="lisa_l_1.1"/>
+    <target name="test_adxl345_nodma"       board="lisa_l_1.1"/>
     <target name="test_esc_mkk_simple"      board="lisa_l_1.1"/>
     <target name="test_esc_asctecv1_simple" board="lisa_l_1.1"/>
     <target name="test_actuators_mkk"       board="lisa_l_1.1"/>

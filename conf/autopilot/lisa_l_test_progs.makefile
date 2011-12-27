@@ -403,6 +403,8 @@ IMU_ASPIRIN_CFLAGS += -DUSE_EXTI15_10_IRQ  # Gyro Int on PC14
 IMU_ASPIRIN_CFLAGS += -DUSE_EXTI9_5_IRQ    # Mag Int on PB5
 IMU_ASPIRIN_CFLAGS += -DUSE_EXTI2_IRQ      # Accel Int on PD2
 IMU_ASPIRIN_CFLAGS += -DUSE_DMA1_C4_IRQ    # SPI2 Rx DMA
+IMU_ASPIRIN_CFLAGS += -DASPIRIN_USE_GYRO    # USE GYRO
+IMU_ASPIRIN_CFLAGS += -DASPIRIN_USE_MAG    # USE MAG
 
 test_imu_aspirin.ARCHDIR = $(ARCH)
 test_imu_aspirin.srcs    = test/subsystems/test_imu.c
@@ -411,6 +413,74 @@ test_imu_aspirin.srcs   += $(COMMON_TEST_SRCS)
 test_imu_aspirin.CFLAGS += $(IMU_ASPIRIN_CFLAGS)
 test_imu_aspirin.srcs   += $(IMU_ASPIRIN_SRCS)
 
+#
+# test IMU aspirin no mag no gyro
+#
+IMU_ASPIRIN_NO_MAG_NO_GYRO_CFLAGS = -DIMU_TYPE_H=\"imu/imu_aspirin.h\" -DIMU_OVERRIDE_CHANNELS -DIMU_ASPIRIN_VERSION_1_5
+IMU_ASPIRIN_NO_MAG_NO_GYRO_SRCS   = $(SRC_SUBSYSTEMS)/imu.c             \
+                     $(SRC_SUBSYSTEMS)/imu/imu_aspirin.c \
+                     $(SRC_ARCH)/subsystems/imu/imu_aspirin_arch.c
+IMU_ASPIRIN_NO_MAG_NO_GYRO_SRCS   += peripherals/hmc5843.c $(SRC_ARCH)/peripherals/hmc5843_arch.c
+IMU_ASPIRIN_NO_MAG_NO_GYRO_CFLAGS += -DUSE_I2C2
+IMU_ASPIRIN_NO_MAG_NO_GYRO_SRCS   += mcu_periph/i2c.c $(SRC_ARCH)/mcu_periph/i2c_arch.c
+IMU_ASPIRIN_NO_MAG_NO_GYRO_CFLAGS += -DUSE_EXTI15_10_IRQ  # Gyro Int on PC14
+IMU_ASPIRIN_NO_MAG_NO_GYRO_CFLAGS += -DUSE_EXTI9_5_IRQ    # Mag Int on PB5
+IMU_ASPIRIN_NO_MAG_NO_GYRO_CFLAGS += -DUSE_EXTI2_IRQ      # Accel Int on PD2
+IMU_ASPIRIN_NO_MAG_NO_GYRO_CFLAGS += -DUSE_DMA1_C4_IRQ    # SPI2 Rx DMA
+
+test_imu_aspirin_no_mag_no_gyro.ARCHDIR = $(ARCH)
+test_imu_aspirin_no_mag_no_gyro.srcs    = test/subsystems/test_imu.c
+test_imu_aspirin_no_mag_no_gyro.CFLAGS  = $(COMMON_TEST_CFLAGS)
+test_imu_aspirin_no_mag_no_gyro.srcs   += $(COMMON_TEST_SRCS)
+test_imu_aspirin_no_mag_no_gyro.CFLAGS += $(IMU_ASPIRIN_NO_MAG_NO_GYRO_CFLAGS)
+test_imu_aspirin_no_mag_no_gyro.srcs   += $(IMU_ASPIRIN_NO_MAG_NO_GYRO_SRCS)
+
+
+#
+# test IMU aspirin no gyro
+#
+IMU_ASPIRIN_NO_GYRO_CFLAGS = -DIMU_TYPE_H=\"imu/imu_aspirin.h\" -DIMU_OVERRIDE_CHANNELS -DIMU_ASPIRIN_VERSION_1_5
+IMU_ASPIRIN_NO_GYRO_SRCS   = $(SRC_SUBSYSTEMS)/imu.c             \
+                     $(SRC_SUBSYSTEMS)/imu/imu_aspirin.c \
+                     $(SRC_ARCH)/subsystems/imu/imu_aspirin_arch.c
+IMU_ASPIRIN_NO_GYRO_SRCS   += peripherals/hmc5843.c $(SRC_ARCH)/peripherals/hmc5843_arch.c
+IMU_ASPIRIN_NO_GYRO_CFLAGS += -DUSE_I2C2
+IMU_ASPIRIN_NO_GYRO_SRCS   += mcu_periph/i2c.c $(SRC_ARCH)/mcu_periph/i2c_arch.c
+IMU_ASPIRIN_NO_GYRO_CFLAGS += -DUSE_EXTI15_10_IRQ  # Gyro Int on PC14
+IMU_ASPIRIN_NO_GYRO_CFLAGS += -DUSE_EXTI9_5_IRQ    # Mag Int on PB5
+IMU_ASPIRIN_NO_GYRO_CFLAGS += -DUSE_EXTI2_IRQ      # Accel Int on PD2
+IMU_ASPIRIN_NO_GYRO_CFLAGS += -DUSE_DMA1_C4_IRQ    # SPI2 Rx DMA
+IMU_ASPIRIN_NO_GYRO_CFLAGS += -DASPIRIN_USE_MAG    # USE MAG
+
+test_imu_aspirin_no_gyro.ARCHDIR = $(ARCH)
+test_imu_aspirin_no_gyro.srcs    = test/subsystems/test_imu.c
+test_imu_aspirin_no_gyro.CFLAGS  = $(COMMON_TEST_CFLAGS)
+test_imu_aspirin_no_gyro.srcs   += $(COMMON_TEST_SRCS)
+test_imu_aspirin_no_gyro.CFLAGS += $(IMU_ASPIRIN_NO_GYRO_CFLAGS)
+test_imu_aspirin_no_gyro.srcs   += $(IMU_ASPIRIN_NO_GYRO_SRCS)
+
+#
+# test IMU aspirin no mag
+#
+IMU_ASPIRIN_NO_MAG_CFLAGS = -DIMU_TYPE_H=\"imu/imu_aspirin.h\" -DIMU_OVERRIDE_CHANNELS -DIMU_ASPIRIN_VERSION_1_5
+IMU_ASPIRIN_NO_MAG_SRCS   = $(SRC_SUBSYSTEMS)/imu.c             \
+                     $(SRC_SUBSYSTEMS)/imu/imu_aspirin.c \
+                     $(SRC_ARCH)/subsystems/imu/imu_aspirin_arch.c
+IMU_ASPIRIN_NO_MAG_SRCS   += peripherals/hmc5843.c $(SRC_ARCH)/peripherals/hmc5843_arch.c
+IMU_ASPIRIN_NO_MAG_CFLAGS += -DUSE_I2C2
+IMU_ASPIRIN_NO_MAG_SRCS   += mcu_periph/i2c.c $(SRC_ARCH)/mcu_periph/i2c_arch.c
+IMU_ASPIRIN_NO_MAG_CFLAGS += -DUSE_EXTI15_10_IRQ  # Gyro Int on PC14
+IMU_ASPIRIN_NO_MAG_CFLAGS += -DUSE_EXTI9_5_IRQ    # Mag Int on PB5
+IMU_ASPIRIN_NO_MAG_CFLAGS += -DUSE_EXTI2_IRQ      # Accel Int on PD2
+IMU_ASPIRIN_NO_MAG_CFLAGS += -DUSE_DMA1_C4_IRQ    # SPI2 Rx DMA
+IMU_ASPIRIN_NO_MAG_CFLAGS += -DASPIRIN_USE_GYRO    # USE GYRO
+
+test_imu_aspirin_no_mag.ARCHDIR = $(ARCH)
+test_imu_aspirin_no_mag.srcs    = test/subsystems/test_imu.c
+test_imu_aspirin_no_mag.CFLAGS  = $(COMMON_TEST_CFLAGS)
+test_imu_aspirin_no_mag.srcs   += $(COMMON_TEST_SRCS)
+test_imu_aspirin_no_mag.CFLAGS += $(IMU_ASPIRIN_NO_MAG_CFLAGS)
+test_imu_aspirin_no_mag.srcs   += $(IMU_ASPIRIN_NO_MAG_SRCS)
 
 #
 # test AHRS

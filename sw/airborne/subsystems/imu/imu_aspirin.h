@@ -109,17 +109,21 @@ extern void imu_aspirin_arch_init(void);
 
 static inline void gyro_read_i2c(void)
 {
+#ifdef ASPIRIN_USE_GYRO
   imu_aspirin.i2c_trans_gyro.buf[0] = ITG3200_REG_GYRO_XOUT_H;
   i2c_submit(&i2c2,&imu_aspirin.i2c_trans_gyro);
   imu_aspirin.reading_gyro = 1;
+#endif
 }
 
 static inline void gyro_copy_i2c(void)
 {
+#ifdef ASPIRIN_USE_GYRO
   int16_t gp = imu_aspirin.i2c_trans_gyro.buf[0]<<8 | imu_aspirin.i2c_trans_gyro.buf[1];
   int16_t gq = imu_aspirin.i2c_trans_gyro.buf[2]<<8 | imu_aspirin.i2c_trans_gyro.buf[3];
   int16_t gr = imu_aspirin.i2c_trans_gyro.buf[4]<<8 | imu_aspirin.i2c_trans_gyro.buf[5];
   RATES_ASSIGN(imu.gyro_unscaled, gp, gq, gr);
+#endif
 }
 
 static inline void accel_copy_spi(void)
@@ -149,6 +153,7 @@ static inline void imu_aspirin_event(void (* _gyro_handler)(void), void (* _acce
   imu_aspirin_arch_int_enable();
 
   // Reset everything if we've been waiting too long
+#ifdef ASPIRIN_USE_GYRO
   if (imu_aspirin.time_since_last_reading > ASPIRIN_GYRO_TIMEOUT) {
     i2c2_er_irq_handler();
     gyro_read_i2c();
@@ -156,19 +161,24 @@ static inline void imu_aspirin_event(void (* _gyro_handler)(void), void (* _acce
     return;
   }
 
+
   // Try again later if transaction is in progress
   if (imu_aspirin.i2c_trans_gyro.status == I2CTransPending || imu_aspirin.i2c_trans_gyro.status == I2CTransRunning)
   {
     return;
   }
+#endif
 
+#ifdef ASPIRIN_USE_MAG
   ImuMagEvent(_mag_handler);
+#endif
 
   // Try back later if things are not idle
   if ((i2c2.status != I2CIdle) || !i2c_idle(&i2c2)) {
     return;
   }
 
+#ifdef ASPIRIN_USE_GYRO
   if (imu_aspirin.reading_gyro) {
     if (imu_aspirin.i2c_trans_gyro.status == I2CTransSuccess) {
       gyro_copy_i2c();
@@ -189,7 +199,7 @@ static inline void imu_aspirin_event(void (* _gyro_handler)(void), void (* _acce
     gyro_read_i2c();
     return;
   }
-
+#endif
 }
 
 #define ImuEvent(_gyro_handler, _accel_handler, _mag_handler) do {		\

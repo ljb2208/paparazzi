@@ -86,14 +86,17 @@ void imu_aspirin_arch_init(void) {
   /* Set "mag ss" and "mag reset" as floating inputs ------------------------*/
   /* "mag ss"    (PC12) is shorted to I2C2 SDA       */
   /* "mag reset" (PC13) is shorted to I2C2 SCL       */
+#ifdef ASPIRIN_USE_MAG
   RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC, ENABLE);
   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_12|GPIO_Pin_13;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_Init(GPIOC, &GPIO_InitStructure);
+#endif
 
   /* Gyro --------------------------------------------------------------------*/
   /* set "eeprom ss" as floating input (on PC14) = gyro int          ---------*/
+#ifdef ASPIRIN_USE_GYRO
   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_14;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
@@ -104,6 +107,7 @@ void imu_aspirin_arch_init(void) {
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_Init(GPIOC, &GPIO_InitStructure);
+#endif
 
 #ifdef ASPIRIN_USE_GYRO_INT
   GPIO_EXTILineConfig(GPIO_PortSourceGPIOC, GPIO_PinSource14);

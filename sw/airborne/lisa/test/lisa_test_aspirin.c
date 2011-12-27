@@ -87,40 +87,52 @@ static inline void main_periodic_task( void ) {
 
   switch (foo) {
   case 2:
+#ifdef ASPIRIN_USE_GYRO
     /* set gyro range to 2000deg/s and low pass at 256Hz */
     i2c2.buf[0] = ITG3200_REG_DLPF_FS;
     i2c2.buf[1] = 0x03;
     i2c2_transmit(ITG3200_ADDR, 2, &i2c_done);
+#endif
     break;
   case 3:
+#ifdef ASPIRIN_USE_GYRO
     /* switch to gyroX clock */
     i2c2.buf[0] = ITG3200_REG_PWR_MGM;
     i2c2.buf[1] = 0x01;
     i2c2_transmit(ITG3200_ADDR, 2, &i2c_done);
+#endif
     break;
   case 4:
+#ifdef ASPIRIN_USE_GYRO
     /* enable interrupt on data ready, idle hight */
     i2c2.buf[0] = ITG3200_REG_INT_CFG;
     i2c2.buf[1] = (0x01 | 0x01<<7);
     i2c2_transmit(ITG3200_ADDR, 2, &i2c_done);
+#endif
     break;
   case 5:
+#ifdef ASPIRIN_USE_MAG
     /* set mag rate to 50Hz */
     i2c2.buf[0] = HMC5843_REG_CFGA;
     i2c2.buf[1] = 0x00 | (0x06 << 2);
     i2c2_transmit(HMC5843_ADDR, 2, &i2c_done);
+#endif
     break;
   case 6:
     /* Set mag gain to 1 Gauss */
+#ifdef ASPIRIN_USE_MAG
     i2c2.buf[0] = HMC5843_REG_CFGB;
     i2c2.buf[1] = 0x01<<5;
     i2c2_transmit(HMC5843_ADDR, 2, &i2c_done);
+#endif
     break;
   case 7:
+#ifdef ASPIRIN_USE_MAG
     /* set mag to continuous measurements */
     i2c2.buf[0] = HMC5843_REG_MODE;
     i2c2.buf[1] = 0x00;
     i2c2_transmit(HMC5843_ADDR, 2, &i2c_done);
+#endif
     break;
   case 8:
     /* reads 8 bytes from address 0x1b */
@@ -146,6 +158,8 @@ static inline void main_event_task( void ) {
 
 static inline void main_init_hw( void ) {
 
+
+#ifdef ASPIRIN_USE_MAG
   /* set mag ss as output and assert it (on PC12)    = sda         ------------------------------*/
   /*     mag drdy  (on PB5)                          = mag int                                   */
   /* set mag reset as output and assert it (on PC13) = scl         ------------------------------*/
@@ -160,6 +174,7 @@ static inline void main_init_hw( void ) {
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_Init(GPIOC, &GPIO_InitStructure);
+#endif
 
   /* configure acc slave select */
   /* set acc slave select as output and assert it ( on PB12) */
@@ -190,7 +205,7 @@ static inline void main_init_hw( void ) {
   NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
 
 
-
+#ifdef ASPIRIN_USE_GYRO
   /* configure external interrupt exti2 on PC14( gyro int ) */
   RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC | RCC_APB2Periph_AFIO, ENABLE);
   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_14;
@@ -211,9 +226,9 @@ static inline void main_init_hw( void ) {
   NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
 
   NVIC_Init(&NVIC_InitStructure);
+#endif
 
-
-
+#ifdef ASPIRIN_USE_MAG
    /* configure external interrupt exti3 on PB5( mag int ) */
   RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB | RCC_APB2Periph_AFIO, ENABLE);
   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_5;
@@ -234,7 +249,7 @@ static inline void main_init_hw( void ) {
   NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
 
   NVIC_Init(&NVIC_InitStructure);
-
+#endif
 
   /* Enable SPI2 Periph clock -------------------------------------------------*/
   RCC_APB1PeriphClockCmd(RCC_APB1Periph_SPI2, ENABLE);
@@ -271,6 +286,7 @@ void exti2_irq_handler(void) {
 
   AccToggleSelect();
 #if 0
+#ifdef ASPIRIN_USE_GYRO
   gyro_ready_for_read = TRUE;
 
   if (gyro_ready_for_read && i2c_done && foo>=5) {
@@ -280,6 +296,7 @@ void exti2_irq_handler(void) {
     i2c2_transceive(ITG3200_ADDR,1, 8, &i2c_done);
     gyro_ready_for_read = FALSE;
   }
+#endif
 #endif
 }
 

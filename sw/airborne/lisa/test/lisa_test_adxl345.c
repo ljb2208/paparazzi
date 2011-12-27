@@ -36,17 +36,19 @@
 
 #include BOARD_CONFIG
 #include "mcu.h"
+#include "mcu_periph/uart.h"
 #include "sys_time.h"
 #include "downlink.h"
 
 #include "peripherals/adxl345.h"
-#include "my_debug_servo.h"
+//#include "my_debug_servo.h"
 
 static inline void main_init( void );
 static inline void main_periodic_task( void );
 static inline void main_event_task( void );
 
 static inline void main_init_hw(void);
+static inline void main_enable_hw(void);
 
 void exti2_irq_handler(void);
 
@@ -66,6 +68,7 @@ static inline void main_init( void ) {
   mcu_init();
   sys_time_init();
   main_init_hw();
+  main_enable_hw();
 
 }
 
@@ -194,9 +197,15 @@ static inline void main_event_task( void ) {
   if (acc_status >= CONFIGURED && acc_ready_for_read) {
     read_data();
     acc_ready_for_read = FALSE;
-    int32_t iax = *((int16_t*)&values[0]);
-    int32_t iay = *((int16_t*)&values[2]);
-    int32_t iaz = *((int16_t*)&values[4]);
+
+    int16_t ax = values[0] + (values[1] << 8);
+    int16_t ay = values[2] + (values[3] << 8);
+    int16_t az = values[4] + (values[5] << 8);
+
+    int32_t iax = ax;
+    int32_t iay = ay;
+    int32_t iaz = az;
+
     RunOnceEvery(10, {DOWNLINK_SEND_IMU_ACCEL_RAW(DefaultChannel, &iax, &iay, &iaz);});
   }
 
@@ -227,13 +236,6 @@ static inline void main_init_hw( void ) {
   EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Falling;
   EXTI_InitStructure.EXTI_LineCmd = ENABLE;
   EXTI_Init(&EXTI_InitStructure);
-  NVIC_InitTypeDef NVIC_InitStructure;
-  NVIC_InitStructure.NVIC_IRQChannel = EXTI2_IRQn;
-  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0x0F;
-  NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0x0F;
-  NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
-  NVIC_Init(&NVIC_InitStructure);
-
 
   /* Enable SPI2 Periph clock -------------------------------------------------*/
   RCC_APB1PeriphClockCmd(RCC_APB1Periph_SPI2, ENABLE);
@@ -260,8 +262,17 @@ static inline void main_init_hw( void ) {
   SPI_InitStructure.SPI_CRCPolynomial = 7;
   SPI_Init(SPI2, &SPI_InitStructure);
 
-  DEBUG_SERVO2_INIT();
+  //DEBUG_SERVO2_INIT();
 
+}
+
+static inline void main_enable_hw(void) {
+	  NVIC_InitTypeDef NVIC_InitStructure;
+	  NVIC_InitStructure.NVIC_IRQChannel = EXTI2_IRQn;
+	  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0x0F;
+	  NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0x0F;
+	  NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+	  NVIC_Init(&NVIC_InitStructure);
 }
 
 
@@ -271,7 +282,7 @@ void exti2_irq_handler(void) {
   if(EXTI_GetITStatus(EXTI_Line2) != RESET)
     EXTI_ClearITPendingBit(EXTI_Line2);
 
-  DEBUG_S4_TOGGLE();
+  //DEBUG_S4_TOGGLE();
 
   acc_ready_for_read = TRUE;
 
