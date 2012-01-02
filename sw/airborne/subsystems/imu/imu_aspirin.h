@@ -84,8 +84,8 @@ struct ImuAspirin {
   uint8_t mag_available;
   uint8_t reading_gyro;
   uint8_t gyro_available_blaaa;
-  int16_t accel_data_offset_count;
-  int16_t accel_reset_count;
+  uint16_t accel_data_offset_count;
+  uint16_t accel_reset_count;
 };
 
 extern struct ImuAspirin imu_aspirin;
@@ -111,32 +111,26 @@ extern void imu_aspirin_arch_init(void);
 
 static inline void gyro_read_i2c(void)
 {
-#ifdef ASPIRIN_USE_GYRO
   imu_aspirin.i2c_trans_gyro.buf[0] = ITG3200_REG_GYRO_XOUT_H;
   i2c_submit(&i2c2,&imu_aspirin.i2c_trans_gyro);
   imu_aspirin.reading_gyro = 1;
-#endif
 }
 
 static inline void gyro_copy_i2c(void)
 {
-#ifdef ASPIRIN_USE_GYRO
-  //int16_t gp = imu_aspirin.i2c_trans_gyro.buf[0]<<8 | imu_aspirin.i2c_trans_gyro.buf[1];
-  int16_t gp = imu_aspirin.accel_data_offset_count;
-  //int16_t gq = imu_aspirin.i2c_trans_gyro.buf[2]<<8 | imu_aspirin.i2c_trans_gyro.buf[3];
-  int16_t gq = imu_aspirin.accel_reset_count;
+  int16_t gp = imu_aspirin.i2c_trans_gyro.buf[0]<<8 | imu_aspirin.i2c_trans_gyro.buf[1];
+  int16_t gq = imu_aspirin.i2c_trans_gyro.buf[2]<<8 | imu_aspirin.i2c_trans_gyro.buf[3];
   int16_t gr = imu_aspirin.i2c_trans_gyro.buf[4]<<8 | imu_aspirin.i2c_trans_gyro.buf[5];
   RATES_ASSIGN(imu.gyro_unscaled, gp, gq, gr);
-#endif
 }
 
 static inline void accel_copy_spi(void)
 {
-	/*const int16_t ax = imu_aspirin.accel_rx_buf[1] | (imu_aspirin.accel_rx_buf[2]<<8);
+	const int16_t ax = imu_aspirin.accel_rx_buf[1] | (imu_aspirin.accel_rx_buf[2]<<8);
 	const int16_t ay = imu_aspirin.accel_rx_buf[3] | (imu_aspirin.accel_rx_buf[4]<<8);
-	const int16_t az = imu_aspirin.accel_rx_buf[5] | (imu_aspirin.accel_rx_buf[6]<<8);*/
+	const int16_t az = imu_aspirin.accel_rx_buf[5] | (imu_aspirin.accel_rx_buf[6]<<8);
 
-
+/*
 	if (imu_aspirin.accel_rx_buf[7] != 0){
 		imu_aspirin.accel_data_offset_count++;
 		const int16_t ax = imu_aspirin.accel_rx_buf[2] | (imu_aspirin.accel_rx_buf[3]<<8);
@@ -157,20 +151,9 @@ static inline void accel_copy_spi(void)
 
 		VECT3_ASSIGN(imu.accel_unscaled, ax, ay, az);
 	}
+*/
 
-
-  //data->x = rec[1] + (rec[2] << 8);
-  //	data->y = rec[3] + (rec[4] << 8);
-  //	data->z = rec[5] + (rec[6] << 8);
-
-//	const int16_t ax = imu_aspirin.accel_rx_buf[1] + (imu_aspirin.accel_rx_buf[2] << 8);
-//	const int16_t ay = imu_aspirin.accel_rx_buf[0];
-//	const int16_t az = imu_aspirin.accel_rx_buf[8];
-
-//  const int16_t ay = imu_aspirin.accel_rx_buf[8] & 0x7F;
-//  const int16_t az = imu_aspirin.accel_rx_buf[0];
-
-//  VECT3_ASSIGN(imu.accel_unscaled, ax, ay, az);
+    VECT3_ASSIGN(imu.accel_unscaled, ax, ay, az);
 }
 
 static inline void imu_gyro_event(void (* _gyro_handler)(void))
@@ -193,7 +176,6 @@ static inline void imu_aspirin_event(void (* _gyro_handler)(void), void (* _acce
   imu_aspirin_arch_int_enable();
 
   // Reset everything if we've been waiting too long
-#ifdef ASPIRIN_USE_GYRO
   if (imu_aspirin.time_since_last_reading > ASPIRIN_GYRO_TIMEOUT) {
     i2c2_er_irq_handler();
     gyro_read_i2c();
@@ -207,18 +189,14 @@ static inline void imu_aspirin_event(void (* _gyro_handler)(void), void (* _acce
   {
     return;
   }
-#endif
 
-#ifdef ASPIRIN_USE_MAG
   ImuMagEvent(_mag_handler);
-#endif
 
   // Try back later if things are not idle
   if ((i2c2.status != I2CIdle) || !i2c_idle(&i2c2)) {
     return;
   }
 
-#ifdef ASPIRIN_USE_GYRO
   if (imu_aspirin.reading_gyro) {
     if (imu_aspirin.i2c_trans_gyro.status == I2CTransSuccess) {
       gyro_copy_i2c();
@@ -239,7 +217,6 @@ static inline void imu_aspirin_event(void (* _gyro_handler)(void), void (* _acce
     gyro_read_i2c();
     return;
   }
-#endif
 }
 
 #define ImuEvent(_gyro_handler, _accel_handler, _mag_handler) do {		\

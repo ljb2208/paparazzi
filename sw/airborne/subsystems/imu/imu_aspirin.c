@@ -5,8 +5,6 @@
 
 struct ImuAspirin imu_aspirin;
 
-//int accelErrorCount;
-
 /* initialize peripherals */
 static void configure_gyro(void);
 static void configure_accel(void);
@@ -31,56 +29,34 @@ void imu_impl_init(void) {
   imu_aspirin.gyro_available_blaaa = FALSE;
   imu_aspirin.mag_available = FALSE;
   imu_aspirin.accel_available = FALSE;
-#ifdef ASPIRIN_USE_GYRO
   imu_aspirin.i2c_trans_gyro.type = I2CTransTxRx;
   imu_aspirin.i2c_trans_gyro.buf[0] = ITG3200_REG_GYRO_XOUT_H;
   imu_aspirin.i2c_trans_gyro.slave_addr = ITG3200_ADDR;
   imu_aspirin.i2c_trans_gyro.len_w = 1;
   imu_aspirin.i2c_trans_gyro.len_r = 6;
   imu_aspirin.i2c_trans_gyro.status = I2CTransFailed;
-#endif
   imu_aspirin_arch_init();
 
-#ifdef ASPIRIN_USE_MAG
   hmc5843_init();
-#endif
-
 }
 
 
 void imu_periodic(void) {
-#ifdef ASPIRIN_USE_MAG
   hmc5843_periodic();
-#endif
+
   if (imu_aspirin.status == AspirinStatusUninit) {
-#ifdef ASPIRIN_USE_GYRO
     configure_gyro();
-#endif
     configure_accel();
     imu_aspirin_arch_int_enable();
     imu_aspirin.status = AspirinStatusIdle;
   } else {
-#ifdef ASPIRIN_USE_GYRO
     imu_aspirin.gyro_available_blaaa = TRUE;
-#endif
     imu_aspirin.time_since_last_reading++;
     imu_aspirin.time_since_last_accel_reading++;
     if (imu_aspirin.time_since_last_accel_reading > ASPIRIN_ACCEL_TIMEOUT || imu_aspirin.accel_data_offset_count > 0) {
       configure_accel();
       imu_aspirin.time_since_last_accel_reading=0;
     }
-
-    /*
-    if (imu.accel_unscaled.x > 1000 || imu.accel_unscaled.x < -1000) {
-    	accelErrorCount++;
-    }
-
-    if (accelErrorCount > 1000) {
-    	imu_aspirin_arch_int_disable();
-    	configure_accel();
-    	accelErrorCount = 0;
-    }
-    */
   }
 
 }
@@ -88,7 +64,6 @@ void imu_periodic(void) {
 
 /* sends a serie of I2C commands to configure the ITG3200 gyro */
 static void configure_gyro(void) {
-#ifdef ASPIRIN_USE_GYRO
   struct i2c_transaction t;
   t.type = I2CTransTx;
   t.slave_addr = ITG3200_ADDR;
@@ -109,7 +84,6 @@ static void configure_gyro(void) {
   t.buf[0] = ITG3200_REG_INT_CFG;
   t.buf[1] = (0x01 | (0x1<<4) | (0x1<<5) | 0x01<<7);
   send_i2c_msg_with_retry(&t);
-#endif
 }
 
 
