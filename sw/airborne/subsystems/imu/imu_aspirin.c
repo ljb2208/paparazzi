@@ -5,6 +5,8 @@
 
 struct ImuAspirin imu_aspirin;
 
+//int accelErrorCount;
+
 /* initialize peripherals */
 static void configure_gyro(void);
 static void configure_accel(void);
@@ -63,10 +65,22 @@ void imu_periodic(void) {
 #endif
     imu_aspirin.time_since_last_reading++;
     imu_aspirin.time_since_last_accel_reading++;
-    if (imu_aspirin.time_since_last_accel_reading > ASPIRIN_ACCEL_TIMEOUT) {
+    if (imu_aspirin.time_since_last_accel_reading > ASPIRIN_ACCEL_TIMEOUT || imu_aspirin.accel_data_offset_count > 0) {
       configure_accel();
       imu_aspirin.time_since_last_accel_reading=0;
     }
+
+    /*
+    if (imu.accel_unscaled.x > 1000 || imu.accel_unscaled.x < -1000) {
+    	accelErrorCount++;
+    }
+
+    if (accelErrorCount > 1000) {
+    	imu_aspirin_arch_int_disable();
+    	configure_accel();
+    	accelErrorCount = 0;
+    }
+    */
   }
 
 }

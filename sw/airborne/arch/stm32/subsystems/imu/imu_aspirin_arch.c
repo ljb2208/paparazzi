@@ -190,6 +190,7 @@ void adxl345_clear_rx_buf(void) {
 }
 
 void adxl345_start_reading_data(void) {
+   adxl345_clear_rx_buf();
    Adxl345Select();
 
    imu_aspirin.accel_tx_buf[0] = (1<<7|1<<6|ADXL345_REG_DATA_X0);
@@ -200,7 +201,7 @@ void adxl345_start_reading_data(void) {
     .DMA_PeripheralBaseAddr = (uint32_t)(SPI2_BASE+0x0C),
     .DMA_MemoryBaseAddr = (uint32_t)imu_aspirin.accel_rx_buf,
     .DMA_DIR = DMA_DIR_PeripheralSRC,
-    .DMA_BufferSize = 7,
+    .DMA_BufferSize = 9,
     .DMA_PeripheralInc = DMA_PeripheralInc_Disable,
     .DMA_MemoryInc = DMA_MemoryInc_Enable,
     .DMA_PeripheralDataSize = DMA_PeripheralDataSize_Byte,
@@ -217,7 +218,7 @@ void adxl345_start_reading_data(void) {
     .DMA_PeripheralBaseAddr = (uint32_t)(SPI2_BASE+0x0C),
     .DMA_MemoryBaseAddr = (uint32_t)imu_aspirin.accel_tx_buf,
     .DMA_DIR = DMA_DIR_PeripheralDST,
-    .DMA_BufferSize = 7,
+    .DMA_BufferSize = 9,
     .DMA_PeripheralInc = DMA_PeripheralInc_Disable,
     .DMA_MemoryInc = DMA_MemoryInc_Enable,
     .DMA_PeripheralDataSize = DMA_PeripheralDataSize_Byte,
@@ -271,8 +272,8 @@ void exti2_irq_handler(void) {
   if(EXTI_GetITStatus(EXTI_Line2) != RESET)
     EXTI_ClearITPendingBit(EXTI_Line2);
 
+//  adxl345_clear_rx_buf();
   adxl345_start_reading_data();
-
 }
 
 /*

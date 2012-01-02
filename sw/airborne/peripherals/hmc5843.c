@@ -94,6 +94,7 @@ void hmc5843_idle_task(void)
     hmc5843.timeout = 0;
     hmc5843.data_available = TRUE;
     memcpy(hmc5843.data.buf, (const void*) hmc5843.i2c_trans.buf, 6);
+
     for (int i = 0; i < 3; i++) {
       hmc5843.data.value[i] = bswap_16(hmc5843.data.value[i]);
     }

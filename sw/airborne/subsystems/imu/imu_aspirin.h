@@ -77,13 +77,15 @@ struct ImuAspirin {
   struct i2c_transaction i2c_trans_gyro;
   struct i2c_transaction i2c_trans_mag;
   volatile uint8_t accel_available;
-  volatile uint8_t accel_tx_buf[7];
-  volatile uint8_t accel_rx_buf[7];
+  volatile uint8_t accel_tx_buf[9];
+  volatile uint8_t accel_rx_buf[9];
   uint32_t time_since_last_reading;
   uint32_t time_since_last_accel_reading;
   uint8_t mag_available;
   uint8_t reading_gyro;
   uint8_t gyro_available_blaaa;
+  int16_t accel_data_offset_count;
+  int16_t accel_reset_count;
 };
 
 extern struct ImuAspirin imu_aspirin;
@@ -119,8 +121,10 @@ static inline void gyro_read_i2c(void)
 static inline void gyro_copy_i2c(void)
 {
 #ifdef ASPIRIN_USE_GYRO
-  int16_t gp = imu_aspirin.i2c_trans_gyro.buf[0]<<8 | imu_aspirin.i2c_trans_gyro.buf[1];
-  int16_t gq = imu_aspirin.i2c_trans_gyro.buf[2]<<8 | imu_aspirin.i2c_trans_gyro.buf[3];
+  //int16_t gp = imu_aspirin.i2c_trans_gyro.buf[0]<<8 | imu_aspirin.i2c_trans_gyro.buf[1];
+  int16_t gp = imu_aspirin.accel_data_offset_count;
+  //int16_t gq = imu_aspirin.i2c_trans_gyro.buf[2]<<8 | imu_aspirin.i2c_trans_gyro.buf[3];
+  int16_t gq = imu_aspirin.accel_reset_count;
   int16_t gr = imu_aspirin.i2c_trans_gyro.buf[4]<<8 | imu_aspirin.i2c_trans_gyro.buf[5];
   RATES_ASSIGN(imu.gyro_unscaled, gp, gq, gr);
 #endif
@@ -128,10 +132,45 @@ static inline void gyro_copy_i2c(void)
 
 static inline void accel_copy_spi(void)
 {
-  const int16_t ax = imu_aspirin.accel_rx_buf[1] | (imu_aspirin.accel_rx_buf[2]<<8);
-  const int16_t ay = imu_aspirin.accel_rx_buf[3] | (imu_aspirin.accel_rx_buf[4]<<8);
-  const int16_t az = imu_aspirin.accel_rx_buf[5] | (imu_aspirin.accel_rx_buf[6]<<8);
-  VECT3_ASSIGN(imu.accel_unscaled, ax, ay, az);
+	/*const int16_t ax = imu_aspirin.accel_rx_buf[1] | (imu_aspirin.accel_rx_buf[2]<<8);
+	const int16_t ay = imu_aspirin.accel_rx_buf[3] | (imu_aspirin.accel_rx_buf[4]<<8);
+	const int16_t az = imu_aspirin.accel_rx_buf[5] | (imu_aspirin.accel_rx_buf[6]<<8);*/
+
+
+	if (imu_aspirin.accel_rx_buf[7] != 0){
+		imu_aspirin.accel_data_offset_count++;
+		const int16_t ax = imu_aspirin.accel_rx_buf[2] | (imu_aspirin.accel_rx_buf[3]<<8);
+		const int16_t ay = imu_aspirin.accel_rx_buf[4] | (imu_aspirin.accel_rx_buf[5]<<8);
+		const int16_t az = imu_aspirin.accel_rx_buf[6] | (imu_aspirin.accel_rx_buf[7]<<8);
+
+		VECT3_ASSIGN(imu.accel_unscaled, ax, ay, az);
+	}
+	else {
+		if (imu_aspirin.accel_data_offset_count > 0) {
+			imu_aspirin.accel_reset_count++;
+		}
+
+		imu_aspirin.accel_data_offset_count = 0;
+		const int16_t ax = imu_aspirin.accel_rx_buf[1] | (imu_aspirin.accel_rx_buf[2]<<8);
+		const int16_t ay = imu_aspirin.accel_rx_buf[3] | (imu_aspirin.accel_rx_buf[4]<<8);
+		const int16_t az = imu_aspirin.accel_rx_buf[5] | (imu_aspirin.accel_rx_buf[6]<<8);
+
+		VECT3_ASSIGN(imu.accel_unscaled, ax, ay, az);
+	}
+
+
+  //data->x = rec[1] + (rec[2] << 8);
+  //	data->y = rec[3] + (rec[4] << 8);
+  //	data->z = rec[5] + (rec[6] << 8);
+
+//	const int16_t ax = imu_aspirin.accel_rx_buf[1] + (imu_aspirin.accel_rx_buf[2] << 8);
+//	const int16_t ay = imu_aspirin.accel_rx_buf[0];
+//	const int16_t az = imu_aspirin.accel_rx_buf[8];
+
+//  const int16_t ay = imu_aspirin.accel_rx_buf[8] & 0x7F;
+//  const int16_t az = imu_aspirin.accel_rx_buf[0];
+
+//  VECT3_ASSIGN(imu.accel_unscaled, ax, ay, az);
 }
 
 static inline void imu_gyro_event(void (* _gyro_handler)(void))
@@ -145,9 +184,10 @@ static inline void imu_aspirin_event(void (* _gyro_handler)(void), void (* _acce
 
   imu_aspirin_arch_int_disable();
   if (imu_aspirin.accel_available) {
-    imu_aspirin.time_since_last_accel_reading = 0;
+	imu_aspirin.time_since_last_accel_reading = 0;
     imu_aspirin.accel_available = FALSE;
     accel_copy_spi();
+
     _accel_handler();
   }
   imu_aspirin_arch_int_enable();

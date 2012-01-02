@@ -405,6 +405,8 @@ IMU_ASPIRIN_CFLAGS += -DUSE_EXTI2_IRQ      # Accel Int on PD2
 IMU_ASPIRIN_CFLAGS += -DUSE_DMA1_C4_IRQ    # SPI2 Rx DMA
 IMU_ASPIRIN_CFLAGS += -DASPIRIN_USE_GYRO    # USE GYRO
 IMU_ASPIRIN_CFLAGS += -DASPIRIN_USE_MAG    # USE MAG
+#IMU_ASPIRIN_CFLAGS += -DUSE_HMC59843_ARCH_RESET    # USE MAG
+#IMU_ASPIRIN_CFLAGS += -DHMC5843_NO_IRQ    # USE MAG
 
 test_imu_aspirin.ARCHDIR = $(ARCH)
 test_imu_aspirin.srcs    = test/subsystems/test_imu.c
@@ -412,6 +414,7 @@ test_imu_aspirin.CFLAGS  = $(COMMON_TEST_CFLAGS)
 test_imu_aspirin.srcs   += $(COMMON_TEST_SRCS)
 test_imu_aspirin.CFLAGS += $(IMU_ASPIRIN_CFLAGS)
 test_imu_aspirin.srcs   += $(IMU_ASPIRIN_SRCS)
+
 
 #
 # test IMU aspirin no mag no gyro
