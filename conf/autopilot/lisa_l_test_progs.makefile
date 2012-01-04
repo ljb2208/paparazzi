@@ -858,3 +858,33 @@ test_settings.CFLAGS += -DDATALINK=PPRZ -DPPRZ_UART=$(MODEM_PORT)
 test_settings.srcs   += subsystems/settings.c
 test_settings.srcs   += $(SRC_ARCH)/subsystems/settings_arch.c
 test_settings.CFLAGS += -DUSE_PERSISTENT_SETTINGS
+
+
+#
+# test adns3080 with DMA
+#
+test_adns3080.ARCHDIR = $(ARCH)
+test_adns3080.CFLAGS  = -I$(SRC_FIRMWARE) -I$(SRC_LISA) -I$(ARCH) -I$(SRC_BOOZ) -I$(SRC_BOOZ_ARCH) -DPERIPHERALS_AUTO_INIT
+test_adns3080.CFLAGS +=  -DBOARD_CONFIG=$(BOARD_CFG)
+test_adns3080.srcs += $(SRC_AIRBORNE)/mcu.c \
+                 $(SRC_ARCH)/mcu_arch.c \
+                 lisa/test/lisa_test_adns3080_dma.c \
+                     $(SRC_ARCH)/stm32_exceptions.c   \
+		     $(SRC_ARCH)/stm32_vector_table.c
+
+test_adns3080.CFLAGS += -DUSE_LED
+test_adns3080.srcs += $(SRC_ARCH)/led_hw.c
+
+test_adns3080.CFLAGS += -DUSE_SYS_TIME -DSYS_TIME_LED=1
+test_adns3080.CFLAGS += -DPERIODIC_TASK_PERIOD='SYS_TICS_OF_SEC((1./512.))'
+test_adns3080.srcs += sys_time.c $(SRC_ARCH)/sys_time_hw.c
+
+test_adns3080.CFLAGS += -DUSE_UART2 -DUART2_BAUD=B57600
+test_adns3080.srcs += mcu_periph/uart.c
+test_adns3080.srcs += $(SRC_ARCH)/mcu_periph/uart_arch.c
+
+test_adns3080.CFLAGS += -DDOWNLINK -DDOWNLINK_TRANSPORT=PprzTransport -DDOWNLINK_DEVICE=Uart2
+test_adns3080.srcs += downlink.c pprz_transport.c
+
+test_adns3080.CFLAGS += -DUSE_EXTI4_IRQ   # Accel Int on PD2
+test_adns3080.CFLAGS += -DUSE_DMA1_C2_IRQ # SPI1 Rx DMA

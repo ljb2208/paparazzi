@@ -295,6 +295,7 @@
     <target name="test_hmc5843"             board="lisa_l_1.1"/>
     <target name="test_itg3200"             board="lisa_l_1.1"/>
     <target name="test_adxl345"             board="lisa_l_1.1"/>
+    <target name="test_adns3080"             board="lisa_l_1.1"/>
     <target name="test_esc_mkk_simple"      board="lisa_l_1.1"/>
     <target name="test_esc_asctecv1_simple" board="lisa_l_1.1"/>
     <target name="test_actuators_mkk"       board="lisa_l_1.1"/>

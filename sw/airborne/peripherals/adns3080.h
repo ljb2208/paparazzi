@@ -9,6 +9,7 @@
 #define ADNS3080_REG_SQUAL 			0x05
 #define ADNS3080_REG_PIXEL_SUM 		0x06
 #define ADNS3080_REG_MAXIMUM_PIXEL 	0x07
+#define ADNS3080_REG_MOTION_BURST	0x50
 
 extern void adns3080_init();
 
