@@ -39,21 +39,29 @@
 #endif
 
 #ifndef SRF08_I2C_DEV
-#define SRF08_I2C_DEV i2c0
+#define SRF08_I2C_DEV i2c1
 #endif
 
 /* Global Variables */
-bool_t srf08_received, srf08_got;
+bool_t srf08_received, srf08_got, srf08_range_requested, srf08_begin_receive;
+
+struct AltSrf08 altSrf08;
 struct i2c_transaction srf_trans;
-uint16_t srf08_range;
+uint16_t srf08_range, srf08_delay_count;
 
 
 /*###########################################################################*/
 
 void srf08_init(void)
 {
+	altSrf08.data_ready = 0;
+	altSrf08.srf08_range = 0;
+	altSrf08.status = srf08Uninit;
+	srf08_range_requested = FALSE;
+	srf08_begin_receive = FALSE;
   srf08_received = FALSE;
   srf08_got = FALSE;
+  srf08_delay_count = 0;
 
   srf_trans.buf[0] = 0x00;
   srf_trans.buf[1] = 0x51;
@@ -69,6 +77,7 @@ void srf08_init(void)
   srf_trans.buf[1] = SRF08_RANGE;
   I2CTransmit(SRF08_I2C_DEV, srf_trans, SRF08_UNIT_0, 2);
 
+  altSrf08.status = srf08Ready;
   return;
 }
 /*###########################################################################*/
@@ -82,27 +91,32 @@ LED_ON(2);
 
 /** Ask the value to the device */
 void srf08_receive(void) {
-LED_OFF(2);
+	LED_OFF(2);
   srf_trans.buf[0] = SRF08_ECHO_1;
-  srf08_received = TRUE;
+  //srf08_received = TRUE;
   I2CTransmit(SRF08_I2C_DEV, srf_trans, SRF08_UNIT_0, 1);
 }
 
 /** Read values on the bus */
 void srf08_read(void) {
-  srf08_got = TRUE;
   I2CReceive(SRF08_I2C_DEV, srf_trans, SRF08_UNIT_0, 2);
 }
 
 /** Copy the I2C buffer */
 void srf08_copy(void) {
-  srf08_range = srf_trans.buf[0] << 8 | srf_trans.buf[1];
+  altSrf08.srf08_range = srf_trans.buf[0] << 8 | srf_trans.buf[1];
 }
 
 void srf08_ping()
 {
   srf08_initiate_ranging();
-  while (srf_trans.status != I2CTransSuccess);  /* blocking */
+  while (srf_trans.status != I2CTransSuccess && failCount < 10){
+	  if (srf_trans.status == I2CTransFailed) {
+		  failCount++;
+		  srf08_initiate_ranging();
+	  }
+  }
+;  /* blocking */
 
   srf08_receive();
 }
@@ -139,21 +153,85 @@ uint32_t srf08_read_register(uint8_t srf08_register)
   return(i2c.rx_word);
 }
 
-void srf08_event(void)
-{
-  float f=0;
-  uint8_t i=0;
+void srf08_get_swrevision(void) {
+	LED_OFF(2);
+  srf_trans.buf[0] = SRF08_COMMAND;
+  //srf08_received = TRUE;
+  I2CTransmit(SRF08_I2C_DEV, srf_trans, SRF08_UNIT_0, 1);
+}
 
-  /** Handling of data sent by the device (initiated by srf08_receive() */
-  if (srf_trans.status == I2CTransSuccess) {
-    if (srf08_received) {
-      srf08_received = FALSE;
-      srf08_read();
-    }
-    else if (srf08_got) {
-      srf08_got = FALSE;
-      srf08_copy();
-      DOWNLINK_SEND_RANGEFINDER(DefaultChannel, &srf08_range, &f, &f, &f, &f, &f, &i);
-    }
-  }
+void srf08_read_swrevision(void) {
+	 I2CReceive(SRF08_I2C_DEV, srf_trans, SRF08_UNIT_0, 2);
+}
+
+void srf08_periodic(void) {
+
+	if (altSrf08.status == srf08RangeRequested) {
+		RunOnceEvery(10, srf08_request_range());
+	} else	{
+		srf08_request_range();
+	}
+}
+
+void srf08_request_range(void) {
+
+	float f=0;
+	uint8_t i=0;
+
+	switch(altSrf08.status)
+	{
+	case srf08Uninit:
+		return;
+	case srf08Ready:
+		altSrf08.status = srf08RangeRequested;
+		srf08_initiate_ranging();
+		break;
+	case srf08RangeRequested:
+		// check to ensure range request completed succesfully
+		if (srf_trans.status == I2CTransSuccess){
+			altSrf08.status = srf08Ranging;
+			srf08_receive();
+			altSrf08.srf08_range_failure_count = 0;
+		} else if (srf_trans.status == I2CTransFailed) {
+			altSrf08.status = srf08Ready;
+			altSrf08.srf08_i2c_error_count++;
+		}
+		break;
+	case srf08Ranging:
+		if (srf_trans.status == I2CTransSuccess){
+			altSrf08.status = srf08Reading;
+			srf08_read();
+		} else if (srf_trans.status == I2CTransFailed) {
+			altSrf08.status = srf08Ready;
+			altSrf08.srf08_i2c_error_count++;
+		}
+		break;
+	case srf08Reading:
+		// check to ensure ranging completed succesfully
+		if (srf_trans.status == I2CTransSuccess){
+
+			if (srf_trans.buf[0] != 0xFF || srf_trans.buf[1] != 0xFF) {
+				// range returned
+				srf08_copy();
+				altSrf08.status = srf08Ready;
+				srf08_got = TRUE;
+				DOWNLINK_SEND_RANGEFINDER(DefaultChannel, &altSrf08.srf08_range, &f, &f, &f, &f, &f, &i);
+			} else {
+				// no range available so re-request
+				srf08_read();
+			}
+		} else if (srf_trans.status == I2CTransFailed) {
+			altSrf08.srf08_i2c_error_count++;
+
+			if (altSrf08.srf08_range_failure_count > MAX_I2C_RANGE_FAILURE_COUNT) {
+				altSrf08.status = srf08Ready;
+				return;
+			}
+
+			altSrf08.srf08_range_failure_count++;
+		}
+		break;
+	default:
+		break;
+	}
 }

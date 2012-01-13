@@ -91,6 +91,11 @@
 #define SRF08_ECHO_16         32
 #define SRF08_ECHO_17         34
 
+// max number of i2c failures before the ranging mode is re-requested.
+#define MAX_I2C_RANGE_FAILURE_COUNT	16
+
+#define SRF08_DELAY_COUNT 2
+
 /* Function Declaration */
 
 extern void srf08_select_unit(uint8_t srf08_address);
@@ -105,15 +110,47 @@ extern uint32_t srf08_read_register(uint8_t srf08_register);
 extern void srf08_change_i2c_address(uint8_t new_i2c_address);
 
 extern void srf08_initiate_ranging(void);
+extern void srf08_send(void);
+
+extern void srf08_get_swrevision(void);
+extern void srf08_read_swrevision(void);
+
 extern void srf08_receive(void);
 
-extern uint16_t srf08_range;
-extern bool_t srf08_received, srf08_got;
+extern void srf08_periodic(void);
+
+enum Srf08Status
+  {
+	srf08Uninit,
+	srf08Ready,
+	srf08RangeRequested,
+	srf08Ranging,
+	srf08Reading,
+	srf08RangeReading,
+	srf08RangeReady,
+    srf08DataReceived
+  };
+
+struct AltSrf08{
+	enum Srf08Status status;
+	uint16_t srf08_range;
+	bool_t data_ready;
+	uint16_t srf08_i2c_error_count;
+	uint8_t srf08_range_failure_count;
+
+};
+
+extern uint16_t srf08_range, srf08_delay_count;
+extern bool_t srf08_received, srf08_got, srf08_range_requested, srf08_begin_receive;
+
+extern void srf08_request_range(void);
+
 /** Read values on the bus */
 extern void srf08_read(void);
 /** Copy the I2C buffer */
 extern void srf08_copy(void);
 
 extern void srf08_event(void);
+
 
 #endif  /* #ifndef SRF08_H */

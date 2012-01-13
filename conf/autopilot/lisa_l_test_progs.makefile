@@ -888,3 +888,36 @@ test_adns3080.srcs += downlink.c pprz_transport.c
 
 test_adns3080.CFLAGS += -DUSE_EXTI4_IRQ   # Accel Int on PD2
 test_adns3080.CFLAGS += -DUSE_DMA1_C2_IRQ # SPI1 Rx DMA
+
+
+#
+# test srf08
+#
+test_srf08.ARCHDIR = $(ARCH)
+test_srf08.CFLAGS  = -I$(SRC_FIRMWARE) -I$(SRC_LISA) -I$(ARCH) -I$(SRC_BOOZ) -I$(SRC_BOOZ_ARCH) -DPERIPHERALS_AUTO_INIT
+test_srf08.CFLAGS += -DBOARD_CONFIG=$(BOARD_CFG)
+test_srf08.CFLAGS += -DUSE_I2C1
+test_srf08.srcs += $(SRC_AIRBORNE)/mcu.c \
+                 $(SRC_ARCH)/mcu_arch.c \
+                 modules/sensors/alt_srf08.c \
+                 lisa/test/lisa_test_srf08.c \
+                     $(SRC_ARCH)/stm32_exceptions.c   \
+		     $(SRC_ARCH)/stm32_vector_table.c
+
+test_srf08.CFLAGS += -DUSE_LED
+test_srf08.srcs += $(SRC_ARCH)/led_hw.c
+
+test_srf08.CFLAGS += -DUSE_SYS_TIME -DSYS_TIME_LED=1
+test_srf08.CFLAGS += -DPERIODIC_TASK_PERIOD='SYS_TICS_OF_SEC((1./512.))'
+test_srf08.srcs += sys_time.c $(SRC_ARCH)/sys_time_hw.c
+
+test_srf08.CFLAGS += -DUSE_UART2 -DUART2_BAUD=B57600
+test_srf08.srcs += mcu_periph/uart.c
+test_srf08.srcs += $(SRC_ARCH)/mcu_periph/uart_arch.c
+
+test_srf08.CFLAGS += -DDOWNLINK -DDOWNLINK_TRANSPORT=PprzTransport -DDOWNLINK_DEVICE=Uart2
+test_srf08.srcs += downlink.c pprz_transport.c
+
+test_srf08.CFLAGS += -DUSE_I2C2
+test_srf08.srcs   += mcu_periph/i2c.c $(SRC_ARCH)/mcu_periph/i2c_arch.c
+test_srf08.CFLAGS += -DSRF08_I2C_DEV=i2c2
