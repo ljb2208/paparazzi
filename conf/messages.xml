@@ -1820,7 +1820,10 @@
   </message>
 
  <!--236 is free -->
- <!--237 is free -->
+  <message name="SONAR" id="237">
+	<field name="range" type="uint16" />
+	<field name="data_available" type="uint8" />
+  </message>
 
   <message name="BOOZ_SIM_POS_LLH" id="238">
     <field name="pprz_lat"   type="float" unit="rad" alt_unit="deg" alt_unit_coef="57.29578"/>

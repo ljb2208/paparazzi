@@ -33,6 +33,7 @@
 #include "messages.h"
 #include "downlink.h"
 #include "led.h"
+#include "subsystems/ins.h"
 
 #ifndef DOWNLINK_DEVICE
 #define DOWNLINK_DEVICE DOWNLINK_AP_DEVICE
@@ -48,6 +49,8 @@ bool_t srf08_received, srf08_got, srf08_range_requested, srf08_begin_receive;
 struct AltSrf08 altSrf08;
 struct i2c_transaction srf_trans;
 uint16_t srf08_range, srf08_delay_count;
+
+uint16_t sonar_meas;
 
 
 /*###########################################################################*/
@@ -105,14 +108,14 @@ void srf08_read(void) {
 /** Copy the I2C buffer */
 void srf08_copy(void) {
   altSrf08.srf08_range = srf_trans.buf[0] << 8 | srf_trans.buf[1];
+  sonar_meas = altSrf08.srf08_range;
 }
 
 void srf08_ping()
 {
   srf08_initiate_ranging();
-  while (srf_trans.status != I2CTransSuccess && failCount < 10){
+  while (srf_trans.status != I2CTransSuccess){
 	  if (srf_trans.status == I2CTransFailed) {
-		  failCount++;
 		  srf08_initiate_ranging();
 	  }
   }
@@ -175,9 +178,6 @@ void srf08_periodic(void) {
 
 void srf08_request_range(void) {
 
-	float f=0;
-	uint8_t i=0;
-
 	switch(altSrf08.status)
 	{
 	case srf08Uninit:
@@ -195,6 +195,7 @@ void srf08_request_range(void) {
 		} else if (srf_trans.status == I2CTransFailed) {
 			altSrf08.status = srf08Ready;
 			altSrf08.srf08_i2c_error_count++;
+			ins_update_on_agl = FALSE;
 		}
 		break;
 	case srf08Ranging:
@@ -204,6 +205,7 @@ void srf08_request_range(void) {
 		} else if (srf_trans.status == I2CTransFailed) {
 			altSrf08.status = srf08Ready;
 			altSrf08.srf08_i2c_error_count++;
+			ins_update_on_agl = FALSE;
 		}
 		break;
 	case srf08Reading:
@@ -215,7 +217,7 @@ void srf08_request_range(void) {
 				srf08_copy();
 				altSrf08.status = srf08Ready;
 				srf08_got = TRUE;
-				DOWNLINK_SEND_RANGEFINDER(DefaultChannel, &altSrf08.srf08_range, &f, &f, &f, &f, &f, &i);
+				ins_update_on_agl = TRUE;
 			} else {
 				// no range available so re-request
 				srf08_read();
@@ -224,6 +226,7 @@ void srf08_request_range(void) {
 			altSrf08.srf08_i2c_error_count++;
 
 			if (altSrf08.srf08_range_failure_count > MAX_I2C_RANGE_FAILURE_COUNT) {
+				ins_update_on_agl = FALSE; // do not update in INS as ranging has failed.
 				altSrf08.status = srf08Ready;
 				return;
 			}

@@ -51,6 +51,8 @@ static inline void main_init_hw(void);
 
 void exti2_irq_handler(void);
 
+bool_t ins_update_on_agl;
+
 int main(void) {
   main_init();
 

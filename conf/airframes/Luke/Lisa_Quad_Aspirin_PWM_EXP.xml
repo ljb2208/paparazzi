@@ -2,6 +2,11 @@
 
 <airframe name="Luke_Quad">
 
+
+ <modules>
+   <load name="alt_srf08.xml"/> 
+ </modules>
+
   <servos min="0" neutral="0" max="0xff">
     <servo name="FRONT"   no="0" min="1000" neutral="1000" max="2000"/>
     <servo name="BACK"    no="1" min="1000" neutral="1000" max="2000"/>
@@ -106,7 +111,7 @@
  <section name="AUTOPILOT">
    <define name="MODE_MANUAL" value="AP_MODE_RATE_DIRECT"/>
    <define name="MODE_AUTO1"  value="AP_MODE_ATTITUDE_DIRECT"/>
-   <define name="MODE_AUTO2"  value="AP_MODE_ATTITUDE_Z_HOLD"/>
+   <define name="MODE_AUTO2"  value="AP_MODE_RATE_Z_HOLD"/>
  </section>
 
  <section name="BAT">
@@ -185,6 +190,8 @@
   <section name="INS" prefix="INS_">
     <define name="BARO_SENS" value="10." integer="16"/>
     <define name="UNTILT_ACCEL" value="1"/>
+    <define name="SONAR_SENS_NUM" value="10"/>
+	<define name="SONAR_SENS_DEN" value="1" />
   </section>
 
  <section name="GUIDANCE_V" prefix="GUIDANCE_V_">
@@ -228,21 +235,18 @@
    <define name="SENSORS_PARAMS" value="&quot;nps_sensors_params_booz2_a1.h&quot;"/>
  </section>
 
-
- <modules>
-   <load name="alt_srf08.xml"/>
- </modules>
-
   <firmware name="rotorcraft">
      <define name="USE_PERSISTENT_SETTINGS"/>
      <define name="USE_INS_NAV_INIT"/>
      <define name="USE_ADAPT_HOVER"/>
 <!--     <define name="FAILSAFE_GROUND_DETECT"/> -->
      <define name="USE_GPS_ACC4R"/>
+    <define name="USE_VFF" />
+	<define name="USE_SONAR" />
      <target name="ap" board="lisa_l_1.1">
       <subsystem name="radio_control" type="spektrum" />
       <subsystem name="actuators"     type="pwm_supervision"/>
-      <subsystem name="imu"           type="aspirin"/>	
+      <subsystem name="imu"           type="aspirin_v1.5"/>	
 	<define name="SERVO_HZ" value="400"/>
 	<define name="RADIO_CONTROL_NB_CHANNEL" value="9" />
 	<define name="RADIO_MODE" value="RADIO_AUX2" />

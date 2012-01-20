@@ -767,6 +767,10 @@ extern uint8_t telemetry_mode_Main_DefaultChannel;
 #define PERIODIC_SEND_BOOZ2_SONAR(_chan) {}
 #endif
 
+#ifdef USE_SONAR
+#define PERIODIC_SEND_SONAR(_chan) DOWNLINK_SEND_SONAR(_chan, &sonar_meas, &ins_update_on_agl);
+#endif
+
 #ifdef BOOZ2_TRACK_CAM
 #include "cam_track.h"
 #define PERIODIC_SEND_CAM_TRACK(_chan) DOWNLINK_SEND_BOOZ_SIM_SPEED_POS(_chan, \

@@ -871,6 +871,7 @@ test_adns3080.srcs += $(SRC_AIRBORNE)/mcu.c \
                  lisa/test/lisa_test_adns3080_dma.c \
                      $(SRC_ARCH)/stm32_exceptions.c   \
 		     $(SRC_ARCH)/stm32_vector_table.c
+		     
 
 test_adns3080.CFLAGS += -DUSE_LED
 test_adns3080.srcs += $(SRC_ARCH)/led_hw.c
