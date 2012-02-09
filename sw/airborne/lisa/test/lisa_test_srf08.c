@@ -79,6 +79,7 @@ static inline void main_periodic_task( void ) {
 	      DOWNLINK_SEND_ALIVE(DefaultChannel, 16, MD5SUM);
 	      LED_PERIODIC();
 	      srf08_periodic();
+
 	    });
 }
 

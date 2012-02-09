@@ -767,8 +767,10 @@ extern uint8_t telemetry_mode_Main_DefaultChannel;
 #define PERIODIC_SEND_BOOZ2_SONAR(_chan) {}
 #endif
 
+//#define PERIODIC_SEND_SONAR(_chan) DOWNLINK_SEND_SONAR(_chan, 0, 0);
+
 #ifdef USE_SONAR
-#define PERIODIC_SEND_SONAR(_chan) DOWNLINK_SEND_SONAR(_chan, &sonar_meas, &ins_update_on_agl);
+#define PERIODIC_SEND_SONAR(_chan) DOWNLINK_SEND_SONAR(_chan, &sonar_meas, &ins_update_on_agl, &altSrf08.srf08_i2c_error_count);
 #endif
 
 #ifdef BOOZ2_TRACK_CAM

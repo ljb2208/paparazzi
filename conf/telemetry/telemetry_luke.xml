@@ -99,6 +99,7 @@
 <!--      <message name="BOOZ2_CMD"               period=".05"/> -->
       <message name="INS"               period=".05"/>
       <message name="INS_REF"           period="5.1"/>
+      <message name="INS_Z"          period=".1"/>
     </mode>
 
     <mode name="h_loop">

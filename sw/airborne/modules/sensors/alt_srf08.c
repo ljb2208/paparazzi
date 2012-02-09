@@ -31,6 +31,7 @@
 #include "alt_srf08.h"
 #include "mcu_periph/uart.h"
 #include "messages.h"
+#include "telemetry.h"
 #include "downlink.h"
 #include "led.h"
 #include "subsystems/ins.h"
@@ -40,7 +41,7 @@
 #endif
 
 #ifndef SRF08_I2C_DEV
-#define SRF08_I2C_DEV i2c1
+#define SRF08_I2C_DEV i2c2
 #endif
 
 /* Global Variables */
@@ -51,6 +52,8 @@ struct i2c_transaction srf_trans;
 uint16_t srf08_range, srf08_delay_count;
 
 uint16_t sonar_meas;
+
+//bool_t ins_update_on_agl;
 
 
 /*###########################################################################*/
@@ -170,7 +173,7 @@ void srf08_read_swrevision(void) {
 void srf08_periodic(void) {
 
 	if (altSrf08.status == srf08RangeRequested) {
-		RunOnceEvery(10, srf08_request_range());
+		RunOnceEvery(100, srf08_request_range());
 	} else	{
 		srf08_request_range();
 	}
@@ -218,6 +221,8 @@ void srf08_request_range(void) {
 				altSrf08.status = srf08Ready;
 				srf08_got = TRUE;
 				ins_update_on_agl = TRUE;
+				ins_update_sonar();
+				//PERIODIC_SEND_SONAR(DefaultChannel, &altSrf08.srf08_range, &ins_update_on_agl);
 			} else {
 				// no range available so re-request
 				srf08_read();

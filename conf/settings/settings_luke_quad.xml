@@ -4,7 +4,7 @@
   <dl_settings>
 
     <dl_settings NAME="Misc">
-       <dl_setting var="telemetry_mode_Main_DefaultChannel" min="0" step="1" max="11" module="telemetry" shortname="telemetry" values="Default|PPM|Raw|Scaled|AHRS|Rate|Attitude|Vertical|Horizontal|Aligner|HS_att_roll|Tune_hover">
+       <dl_setting var="telemetry_mode_Main_DefaultChannel" min="0" step="1" max="12" module="telemetry" shortname="telemetry" values="Default|PPM|Raw|Sensors|Scaled|AHRS|Rate|Attitude|Vertical|Horizontal|Aligner|HS_att_roll|Tune_hover">
          <key_press key="d" value="0"/>
          <key_press key="v" value="7"/>
          <key_press key="h" value="8"/>
@@ -22,14 +22,13 @@
     </dl_settings>
 
     <dl_settings NAME="Rate Loop">
-      <dl_setting var="stabilization_rate_gain.p" min="-1000" step="1" max="-1" module="stabilization/stabilization_rate" shortname="gain p"/>
-      <dl_setting var="stabilization_rate_gain.q" min="-1000" step="1" max="-1" module="stabilization/stabilization_rate" shortname="gain q"/>
-      <dl_setting var="stabilization_rate_gain.r" min="-1000" step="1" max="-1" module="stabilization/stabilization_rate" shortname="gain r"/>
+      <dl_setting var="stabilization_rate_gain.p" min="-2000" step="1" max="-1" module="stabilization/stabilization_rate" shortname="gain p"/>
+      <dl_setting var="stabilization_rate_gain.q" min="-2000" step="1" max="-1" module="stabilization/stabilization_rate" shortname="gain q"/>
+      <dl_setting var="stabilization_rate_gain.r" min="-2000" step="1" max="-1" module="stabilization/stabilization_rate" shortname="gain r"/>
       <dl_setting var="stabilization_rate_igain.p" min="-1000" step="1" max="-1" module="stabilization/stabilization_rate" shortname="i gain p"/>
       <dl_setting var="stabilization_rate_igain.q" min="-1000" step="1" max="-1" module="stabilization/stabilization_rate" shortname="i gain q"/>
       <dl_setting var="stabilization_rate_igain.r" min="-1000" step="1" max="-1" module="stabilization/stabilization_rate" shortname="i gain r"/>
     </dl_settings>
-
 
     <dl_settings NAME="Att Loop">
       <dl_setting var="stabilization_gains.p.x" min="-4000" step="1" max="-1"   module="stabilization/stabilization_attitude" shortname="pgain phi" />
