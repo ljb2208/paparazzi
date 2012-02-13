@@ -20,8 +20,7 @@
       <message name="IMU_GYRO_RAW"      period=".25"/>
       <message name="IMU_MAG_RAW"       period=".25"/>
       <message name="BARO_RAW"          period=".1"/>
-      <message name="SONAR"          period=".1"/>
-
+      <message name="SONAR"          period=".1"/>	
     </mode>
 
     <mode name="ppm">
@@ -100,6 +99,7 @@
       <message name="INS"               period=".05"/>
       <message name="INS_REF"           period="5.1"/>
       <message name="INS_Z"          period=".1"/>
+      <message name="SONAR"          period=".1"/>
     </mode>
 
     <mode name="h_loop">
