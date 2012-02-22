@@ -6,6 +6,7 @@
 //extern void i2c_hw_init(void);
 #define i2c0_hw_init() {}
 #define i2c1_hw_init() {}
+#define i2c2_hw_init() {}
 
 #define I2c0SendStart() {}
 #define I2c1SendStart() {}

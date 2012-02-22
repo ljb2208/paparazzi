@@ -1,4 +1,4 @@
-# Hey Emacs, this is a -*- makefile -*-
+	# Hey Emacs, this is a -*- makefile -*-
 #
 #   $Id$
 #   Copyright (C) 2006 Pascal Brisset, Antoine Drouin
@@ -57,6 +57,7 @@ CFLAGS		=						\
 	$($(TARGET).CFLAGS)					\
 	$(LOCAL_CFLAGS)						\
 	-O2							\
+	-g							\
 
 # meschach prototypes trigger numerous warnings
 ifneq ($(SIM_TYPE),BOOZ)

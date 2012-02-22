@@ -81,6 +81,9 @@ int32_t guidance_v_ki;
 
 int32_t guidance_v_z_sum_err;
 
+int32_t err_z;
+int32_t err_zd;
+
 
 #define GuidanceVSetRef(_pos, _speed, _accel) { \
     gv_set_ref(_pos, _speed, _accel);	     \
@@ -249,9 +252,11 @@ __attribute__ ((always_inline)) static inline void run_hover_loop(bool_t in_flig
   guidance_v_zd_ref = gv_zd_ref<<(INT32_SPEED_FRAC - GV_ZD_REF_FRAC);
   guidance_v_zdd_ref = gv_zdd_ref<<(INT32_ACCEL_FRAC - GV_ZDD_REF_FRAC);
   /* compute the error to our reference */
-  int32_t err_z  =  ins_ltp_pos.z - guidance_v_z_ref;
+  //int32_t err_z  =  ins_ltp_pos.z - guidance_v_z_ref;
+  err_z  =  ins_ltp_pos.z - guidance_v_z_ref;
   Bound(err_z, GUIDANCE_V_MIN_ERR_Z, GUIDANCE_V_MAX_ERR_Z);
-  int32_t err_zd =  ins_ltp_speed.z - guidance_v_zd_ref;
+  //int32_t err_zd =  ins_ltp_speed.z - guidance_v_zd_ref;
+  err_zd =  ins_ltp_speed.z - guidance_v_zd_ref;
   Bound(err_zd, GUIDANCE_V_MIN_ERR_ZD, GUIDANCE_V_MAX_ERR_ZD);
 
   if (in_flight) {
