@@ -70,7 +70,7 @@ static gboolean on_data_received(GIOChannel *source,
     case JS_PITCH:
       ppm_pulses[RADIO_PITCH] = 1498 + (js.value - 113) * (float)(2050-950) / (float)(224 - 1);
       break;
-    case JS_ROLL:
+    case NPS_JS_ROLL:
       ppm_pulses[RADIO_ROLL] = 1500 + (js.value - 112) * (float)(2050-950) / (float)(1 - 224);
       break;
     case JS_YAW:

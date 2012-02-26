@@ -173,7 +173,7 @@ void srf08_read_swrevision(void) {
 void srf08_periodic(void) {
 
 	if (altSrf08.status == srf08RangeRequested) {
-		RunOnceEvery(100, srf08_request_range());
+		RunOnceEvery(25, srf08_request_range());
 	} else	{
 		srf08_request_range();
 	}

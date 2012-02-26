@@ -1,7 +1,7 @@
 #ifndef BOOZ_JOYSTICK_H
 #define BOOZ_JOYSTICK_H
 
-#define JS_ROLL     0
+#define NPS_JS_ROLL     0
 #define JS_PITCH    1
 #define JS_MODE     2
 #define JS_YAW      5
