@@ -186,6 +186,8 @@ void adxl345_clear_rx_buf(void) {
 }
 
 void adxl345_start_reading_data(void) {
+	 adxl345_clear_rx_buf();
+
    Adxl345Select();
 
    imu_aspirin.accel_tx_buf[0] = (1<<7|1<<6|ADXL345_REG_DATA_X0);
