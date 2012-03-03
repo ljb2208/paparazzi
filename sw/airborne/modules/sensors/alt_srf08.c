@@ -52,6 +52,7 @@ struct i2c_transaction srf_trans;
 uint16_t srf08_range, srf08_delay_count;
 
 uint16_t sonar_meas;
+uint16_t sonar_meas_adj;
 
 //bool_t ins_update_on_agl;
 

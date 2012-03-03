@@ -29,6 +29,8 @@
 #include "math/pprz_algebra_int.h"
 #include "math/pprz_algebra_float.h"
 
+#include "math/pprz_trig_int.h"
+
 #include "subsystems/ahrs.h"
 
 #ifdef USE_VFF
@@ -86,6 +88,8 @@ struct EnuCoor_i ins_enu_pos;
 struct EnuCoor_i ins_enu_speed;
 struct EnuCoor_i ins_enu_accel;
 
+int32_t test;
+int32_t test2;
 
 void ins_init() {
 #ifdef USE_INS_NAV_INIT
@@ -273,6 +277,15 @@ void ins_update_gps(void) {
 void ins_update_sonar() {
 #if defined USE_SONAR && defined USE_VFF
   //static int32_t sonar_filtered = 0;
+
+#ifdef INS_SONAR_CORRECT_ANGLE
+	int32_t ctheta, cphi;
+	PPRZ_ITRIG_COS(ctheta, ahrs.ltp_to_body_euler.theta);
+	PPRZ_ITRIG_COS(cphi, ahrs.ltp_to_body_euler.phi);
+	sonar_meas_adj = (sonar_meas * ctheta)>>INT32_TRIG_FRAC;
+	sonar_meas_adj = (sonar_meas_adj * cphi) >> INT32_TRIG_FRAC;
+#endif
+
   sonar_filtered = (sonar_meas + 2*sonar_filtered) / 3;
   /* update baro_qfe assuming a flat ground */
   if (ins_update_on_agl && baro.status == BS_RUNNING) {

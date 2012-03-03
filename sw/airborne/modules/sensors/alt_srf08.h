@@ -143,6 +143,7 @@ struct AltSrf08{
 extern uint16_t srf08_range, srf08_delay_count;
 extern bool_t srf08_received, srf08_got, srf08_range_requested, srf08_begin_receive;
 extern uint16_t sonar_meas;
+extern uint16_t sonar_meas_adj;
 //extern bool_t ins_update_on_agl;
 extern struct AltSrf08 altSrf08;
 

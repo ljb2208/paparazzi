@@ -1822,6 +1822,7 @@
  <!--236 is free -->
   <message name="SONAR" id="237">
 	<field name="range" type="uint16" />
+	<field name="range_adj" type="uint16" />
 	<field name="data_available" type="uint8" />
 	<field name="i2c_errors" type="uint16" />
   </message>

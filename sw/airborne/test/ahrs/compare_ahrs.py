@@ -28,8 +28,8 @@ def main():
 #    traj_nb = 0; # static
 #    traj_nb = 1; # sine orientation
 #    traj_nb = 2; # sine X quad
-    traj_nb = 3; # step_phi
-#    traj_nb = 4; # step_phi_2nd_order
+#    traj_nb = 3; # step_phi
+    traj_nb = 4; # step_phi_2nd_order
 #    traj_nb = 5; # step_bias
 #    traj_nb = 6; # coordinated circle
 #    traj_nb = 7; # stop stop X quad
@@ -54,9 +54,9 @@ def main():
     build_opt2 += ["PROPAGATE_LOW_PASS_RATES=1"];
 #    build_opt2 = build_opt1;
 #    ahrs_type2 = "FLQ";
-    ahrs_type2 = "FCQ";
-#    ahrs_type2 = "ICQ";
-    ahrs_type2 = ahrs_type1;
+#    ahrs_type2 = "FCQ";
+    ahrs_type2 = "ICQ";
+#    ahrs_type2 = ahrs_type1;
     sim_res2 = ahrs_utils.run_simulation(ahrs_type2, build_opt2, traj_nb)
 
     ahrs_utils.plot_simulation_results(False, 'b', sim_res1)
