@@ -768,6 +768,12 @@ extern uint8_t telemetry_mode_Main_DefaultChannel;
 #define PERIODIC_SEND_CAM_TRACK(_trans, _dev) {}
 #endif
 
+#ifdef USE_SONAR
+		#define PERIODIC_SEND_SONAR(_trans, _dev) DOWNLINK_SEND_SONAR(_trans, _dev, &sonar_meas, &sonar_meas_adj, &ins_update_on_agl, &altSrf08.srf08_i2c_error_count);
+#else
+		#define PERIODIC_SEND_SONAR(_trans, _dev) {}
+#endif
+
 #include "generated/settings.h"
 #define PERIODIC_SEND_DL_VALUE(_trans, _dev) PeriodicSendDlValue(_trans, _dev)
 

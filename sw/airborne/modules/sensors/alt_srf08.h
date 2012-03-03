@@ -59,10 +59,10 @@
 
 #define SRF08_I2C_BROADCAST_ADDRESS   0X00
 
-#define SRF08_MIN_GAIN        0      /* sets gain to 94   */
-#define SRF08_MAX_GAIN        31     /* sets gain to 1025 */
-#define SRF08_MIN_RANGE       0      /* in millimeters    */
-#define SRF08_MAX_RANGE       11008  /* in millimeters    */
+// see http://www.robot-electronics.co.uk/htm/srf08tech.shtml
+// for information on range and gains.
+#define SRF08_RANGE			  0x8C		/* in millimeters	*/
+#define SRF08_GAIN			  0x11			/* 0 to 31 */
 
 #define SRF08_INCHES          0X50
 #define SRF08_CENTIMETERS     0X51
@@ -71,6 +71,7 @@
 /* register positions */
 #define SRF08_COMMAND         0
 #define SRF08_SET_GAIN        1
+#define SRF08_SET_RANGE       2
 #define SRF08_LIGHT           1
 #define SRF08_ECHO_1          2
 #define SRF08_ECHO_2          4
@@ -90,6 +91,11 @@
 #define SRF08_ECHO_16         32
 #define SRF08_ECHO_17         34
 
+// max number of i2c failures before the ranging mode is re-requested.
+#define MAX_I2C_RANGE_FAILURE_COUNT	16
+
+#define SRF08_DELAY_COUNT 2
+
 /* Function Declaration */
 
 extern void srf08_select_unit(uint8_t srf08_address);
@@ -104,15 +110,51 @@ extern uint32_t srf08_read_register(uint8_t srf08_register);
 extern void srf08_change_i2c_address(uint8_t new_i2c_address);
 
 extern void srf08_initiate_ranging(void);
+extern void srf08_send(void);
+
+extern void srf08_get_swrevision(void);
+extern void srf08_read_swrevision(void);
+
 extern void srf08_receive(void);
 
-extern uint16_t srf08_range;
-extern bool_t srf08_received, srf08_got;
+extern void srf08_periodic(void);
+
+enum Srf08Status
+  {
+	srf08Uninit,
+	srf08Ready,
+	srf08RangeRequested,
+	srf08Ranging,
+	srf08Reading,
+	srf08RangeReading,
+	srf08RangeReady,
+    srf08DataReceived
+  };
+
+struct AltSrf08{
+	enum Srf08Status status;
+	uint16_t srf08_range;
+	bool_t data_ready;
+	uint16_t srf08_i2c_error_count;
+	uint8_t srf08_range_failure_count;
+
+};
+
+extern uint16_t srf08_range, srf08_delay_count;
+extern bool_t srf08_received, srf08_got, srf08_range_requested, srf08_begin_receive;
+extern uint16_t sonar_meas;
+extern uint16_t sonar_meas_adj;
+//extern bool_t ins_update_on_agl;
+extern struct AltSrf08 altSrf08;
+
+extern void srf08_request_range(void);
+
 /** Read values on the bus */
 extern void srf08_read(void);
 /** Copy the I2C buffer */
 extern void srf08_copy(void);
 
 extern void srf08_event(void);
+
 
 #endif  /* #ifndef SRF08_H */

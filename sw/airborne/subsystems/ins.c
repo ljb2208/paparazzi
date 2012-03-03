@@ -65,6 +65,10 @@ struct FloatVect2 ins_gps_speed_m_s_ned;
 #endif
 bool_t ins_hf_realign;
 
+#if USE_SONAR
+static int32_t sonar_filtered = 0;
+#endif
+
 /* barometer                   */
 #if USE_VFF
 int32_t ins_qfe;
@@ -268,7 +272,6 @@ void ins_update_gps(void) {
 
 void ins_update_sonar() {
 #if USE_SONAR && USE_VFF
-  static int32_t sonar_filtered = 0;
   sonar_filtered = (sonar_meas + 2*sonar_filtered) / 3;
   /* update baro_qfe assuming a flat ground */
   if (ins_update_on_agl && baro.status == BS_RUNNING) {

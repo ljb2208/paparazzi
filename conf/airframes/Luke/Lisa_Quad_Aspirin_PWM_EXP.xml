@@ -2,11 +2,9 @@
 
 <airframe name="Luke_Quad">
 
-<!--
-<modules>
+  <modules>
    <load name="alt_srf08.xml"/>  
- </modules> 
--->
+  </modules> 
 
   <servos min="0" neutral="0" max="0xff">
     <servo name="FRONT"   no="0" min="1000" neutral="1000" max="2000"/>
@@ -207,9 +205,9 @@
   <section name="INS" prefix="INS_">
     <define name="BARO_SENS" value="10." integer="16"/>
 <!--    <define name="UNTILT_ACCEL" value="1"/> -->
-<!--    <define name="SONAR_SENS_NUM" value="-1"/>
+    <define name="SONAR_SENS_NUM" value="-1"/>
     <define name="SONAR_SENS_DEN" value="0.33" /> 
-    <define name="SONAR_CORRECT_ANGLE" value="1" /> -->
+    <define name="SONAR_CORRECT_ANGLE" value="1" />
   </section>
 
  <section name="GUIDANCE_V" prefix="GUIDANCE_V_">
@@ -262,7 +260,7 @@
 <!--     <define name="FAILSAFE_GROUND_DETECT"/> -->
      <define name="USE_GPS_ACC4R"/>
     <define name="USE_VFF" />
-<!--   <define name="USE_SONAR" /> -->
+    <define name="USE_SONAR" />
      <target name="ap" board="lisa_l_1.1">
       <subsystem name="radio_control" type="spektrum" />
       <subsystem name="actuators"     type="pwm_supervision"/>
