@@ -5,7 +5,7 @@
     <file name="alt_srf08.h"/>
   </header>
   <init fun="srf08_init()"/>
-  <periodic fun="srf08_periodic()" freq="1" delay="4"/>
+  <periodic fun="srf08_periodic()" freq="3" />
   <makefile>
     <file name="alt_srf08.c"/>
     <define name="USE_I2C2" />
