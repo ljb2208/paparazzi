@@ -222,8 +222,8 @@
    <define name="HOVER_KD"    value="-200"/>
    <define name="HOVER_KI"    value="0"/>
 -->
-   <define name="HOVER_KP"     value="500"/>
-   <define name="HOVER_KD"     value="50"/>
+   <define name="HOVER_KP"     value="0"/>
+   <define name="HOVER_KD"     value="0"/>
    <define name="HOVER_KI"     value="0"/>
 
    <!-- 1.5m/s for full stick : BOOZ_SPEED_I_OF_F(1.5) / (MAX_PPRZ/2) -->
@@ -261,6 +261,7 @@
      <define name="USE_GPS_ACC4R"/>
     <define name="USE_VFF" />
     <define name="USE_SONAR" />
+	<define name="BARO_LOW_GAIN" />
      <target name="ap" board="lisa_l_1.1">
       <subsystem name="radio_control" type="spektrum" />
       <subsystem name="actuators"     type="pwm_supervision"/>
