@@ -39,7 +39,7 @@ void maxbotix_init(void) {
 /** Read ADC value to update sonar measurement
  */
 void maxbotix_read(void) {
-  sonar_meas = sonar_adc.sum / sonar_adc.av_nb_sample;
+  sonar_meas = ((sonar_adc.sum / sonar_adc.av_nb_sample) - 1320) / 2;
   sonar_data_available = TRUE;
 }
 

@@ -1473,8 +1473,12 @@
     <field name="br"     type="int32" alt_unit="degres/s" alt_unit_coef="0.0139882"/>
   </message>
 
+<message name="SONAR" id="179">
+	<field name="data_avail" type="uint8" />
+	<field name="meas" type="uint16" unit="adc"/>
+	<field name="filt" type="int32" />
+</message>
 
- <!--179 is free -->
 
   <message name="FMS_TIME" id="180">
     <field name="tv_sec"   type="uint32"/>

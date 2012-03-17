@@ -69,6 +69,7 @@ int32_t ins_baro_alt;
 #if USE_SONAR
 bool_t  ins_update_on_agl;
 int32_t ins_sonar_offset;
+int32_t sonar_filtered;
 #endif
 #endif
 bool_t  ins_vf_realign;
@@ -104,6 +105,7 @@ void ins_init() {
 #if USE_VFF
   ins_baro_initialised = FALSE;
 #if USE_SONAR
+  sonar_filtered = 0;
   ins_update_on_agl = FALSE;
 #endif
   vff_init(0., 0., 0.);
@@ -264,7 +266,6 @@ void ins_update_gps(void) {
 
 void ins_update_sonar() {
 #if USE_SONAR && USE_VFF
-  static int32_t sonar_filtered = 0;
   sonar_filtered = (sonar_meas + 2*sonar_filtered) / 3;
   /* update baro_qfe assuming a flat ground */
   if (ins_update_on_agl && baro.status == BS_RUNNING) {
