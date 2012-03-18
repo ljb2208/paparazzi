@@ -88,7 +88,7 @@
     </mode>
 
     <mode name="vert_loop">
-      <message name="ROTORCRAFT_STATUS"             period="1.2"/>
+      <message name="ROTORCRAFT_STATUS"             period="0.1"/>
       <message name="DL_VALUE"                period="0.5"/>
       <message name="ALIVE"                   period="0.9"/>
       <message name="VFF"               period=".05"/>

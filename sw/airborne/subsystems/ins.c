@@ -65,10 +65,6 @@ struct FloatVect2 ins_gps_speed_m_s_ned;
 #endif
 bool_t ins_hf_realign;
 
-#if USE_SONAR
-static int32_t sonar_filtered = 0;
-#endif
-
 /* barometer                   */
 #if USE_VFF
 int32_t ins_qfe;
@@ -77,6 +73,7 @@ int32_t ins_baro_alt;
 #if USE_SONAR
 bool_t  ins_update_on_agl;
 int32_t ins_sonar_offset;
+int32_t sonar_filtered = 0;
 #endif
 #endif
 bool_t  ins_vf_realign;

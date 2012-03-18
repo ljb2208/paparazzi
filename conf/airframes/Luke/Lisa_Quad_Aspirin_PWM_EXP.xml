@@ -2,9 +2,11 @@
 
 <airframe name="Luke_Quad">
 
-  <modules>
-   <load name="alt_srf08.xml"/>  
-  </modules> 
+    <modules main_freq="512">
+    <load name="sonar_maxbotix_booz.xml">
+      <configure name="ADC_SONAR" value="1"/>
+    </load>
+</modules>
 
   <servos min="0" neutral="0" max="0xff">
     <servo name="FRONT"   no="0" min="1000" neutral="1000" max="2000"/>
@@ -207,14 +209,14 @@
 <!--    <define name="UNTILT_ACCEL" value="1"/> -->
     <define name="SONAR_SENS_NUM" value="-1"/>
     <define name="SONAR_SENS_DEN" value="0.33" /> 
-    <define name="SONAR_CORRECT_ANGLE" value="1" />
+<!--    <define name="SONAR_CORRECT_ANGLE" value="1" /> -->
   </section>
 
  <section name="GUIDANCE_V" prefix="GUIDANCE_V_">
-   <define name="MIN_ERR_Z"   value="POS_BFP_OF_REAL(-100.)"/>
-   <define name="MAX_ERR_Z"   value="POS_BFP_OF_REAL( 100.)"/>
-   <define name="MIN_ERR_ZD"  value="SPEED_BFP_OF_REAL(-100.)"/>
-   <define name="MAX_ERR_ZD"  value="SPEED_BFP_OF_REAL( 100.)"/>
+   <define name="MIN_ERR_Z"   value="POS_BFP_OF_REAL(-10.)"/>
+   <define name="MAX_ERR_Z"   value="POS_BFP_OF_REAL( 10.)"/>
+   <define name="MIN_ERR_ZD"  value="SPEED_BFP_OF_REAL(-10.)"/>
+   <define name="MAX_ERR_ZD"  value="SPEED_BFP_OF_REAL( 10.)"/>
    <define name="MAX_SUM_ERR" value="2000000"/>
 
 <!--
@@ -259,9 +261,8 @@
      <define name="USE_ADAPT_HOVER"/>
 <!--     <define name="FAILSAFE_GROUND_DETECT"/> -->
      <define name="USE_GPS_ACC4R"/>
-    <define name="USE_VFF" />
-    <define name="USE_SONAR" />
-	<define name="BARO_LOW_GAIN" />
+     <define name="USE_VFF" />
+<!--	<define name="BARO_LOW_GAIN" /> -->
      <target name="ap" board="lisa_l_1.1">
       <subsystem name="radio_control" type="spektrum" />
       <subsystem name="actuators"     type="pwm_supervision"/>
