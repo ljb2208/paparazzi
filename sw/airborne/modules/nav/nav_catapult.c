@@ -53,7 +53,7 @@
 #endif
 #include "mcu_periph/uart.h"
 #include "messages.h"
-#include "downlink.h"
+#include "subsystems/datalink/datalink.h"
 
 
 static bool_t nav_catapult_armed = FALSE;
@@ -64,7 +64,7 @@ static uint16_t nav_catapult_launch = 0;
 #endif
 
 #ifndef NAV_CATAPULT_MOTOR_DELAY
-#define NAV_CATAPULT_MOTOR_DELAY  20		// Main Control Loops
+#define NAV_CATAPULT_MOTOR_DELAY  45		// Main Control Loops
 #endif
 
 #define NAV_CATAPULT_HEADING_DELAY (60 * 3)
@@ -124,7 +124,7 @@ bool_t nav_catapult_init(void)
 
 
 
-bool_t nav_catapult(uint8_t _climb) 
+bool_t nav_catapult(uint8_t _to, uint8_t _climb) 
 {
   float alt = WaypointAlt(_climb);
 
@@ -154,6 +154,10 @@ bool_t nav_catapult(uint8_t _climb)
     NavVerticalThrottleMode(9600*(0));
 
     // Store take-off waypoint
+    WaypointX(_to) = GetPosX();
+    WaypointY(_to) = GetPosY();
+    WaypointAlt(_to) = GetPosAlt();
+
     nav_catapult_x = estimator_x;
     nav_catapult_y = estimator_y;
 
@@ -185,10 +189,21 @@ bool_t nav_catapult(uint8_t _climb)
     WaypointX(_climb) = nav_catapult_x + (dir_x / dir_L) * 300;
     WaypointY(_climb) = nav_catapult_y + (dir_y / dir_L) * 300;
 
-    DownlinkSendWp(DefaultChannel, _climb);
+    DownlinkSendWp(DefaultChannel, DefaultDevice, _climb);
   }
 
 
 return TRUE;
 
 }	// end of gls()
+
+bool_t nav_select_touch_down(uint8_t _td)
+{
+  WaypointX(_td) = GetPosX();
+  WaypointY(_td) = GetPosY();
+  WaypointAlt(_td) = GetPosAlt();
+  return FALSE;
+}
+
+
+

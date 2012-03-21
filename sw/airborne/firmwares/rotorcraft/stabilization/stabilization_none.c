@@ -32,6 +32,9 @@
 #define REF_DOT_FRAC 11
 #define REF_FRAC  16
 
+#ifndef SUPERVISION_SCALE
+#define SUPERVISION_SCALE MAX_PPRZ
+#endif
 
 #define OFFSET_AND_ROUND(_a, _b) (((_a)+(1<<((_b)-1)))>>(_b))
 #define OFFSET_AND_ROUND2(_a, _b) (((_a)+(1<<((_b)-1))-((_a)<0?1:0))>>(_b))
@@ -48,11 +51,11 @@ void stabilization_none_init(void) {
 void stabilization_none_read_rc( void ) {
 
 
-    stabilization_none_rc_cmd.p = (int32_t)-radio_control.values[RADIO_ROLL];
+    stabilization_none_rc_cmd.p = (int32_t)radio_control.values[RADIO_ROLL];
 
     stabilization_none_rc_cmd.q = (int32_t)radio_control.values[RADIO_PITCH];
 
-    stabilization_none_rc_cmd.r = (int32_t)-radio_control.values[RADIO_YAW];
+    stabilization_none_rc_cmd.r = (int32_t)radio_control.values[RADIO_YAW];
 }
 
 void stabilization_none_enter(void) {
