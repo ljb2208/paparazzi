@@ -134,10 +134,20 @@
  */
 /* m */
 /* aka 2^8/INS_BARO_SENS  */
-#define NPS_BARO_QNH             900.
-#define NPS_BARO_SENSITIVITY      17.066667
+#define NPS_BARO_QNH             18700.
+//#define NPS_BARO_SENSITIVITY      0.12
+#define NPS_BARO_SENSITIVITY      0.0064
 #define NPS_BARO_DT              (1./100.)
 #define NPS_BARO_NOISE_STD_DEV     5.e-2
+
+/*
+ *  SONAR
+ */
+/* m */
+/* aka 2^8/INS_BARO_SENS  */
+#define NPS_SONAR_SENSITIVITY      1
+#define NPS_SONAR_DT              (1./10.)
+#define NPS_SONAR_NOISE_STD_DEV     5.e-2
 
 /*
  *  GPS

@@ -23,9 +23,10 @@
 
 #include "modules/sonar/sonar_maxbotix.h"
 #include "mcu_periph/adc.h"
+//#include "subsystems/ins.h" // needed because ins is not a module
 
-uint16_t sonar_meas;
-bool_t sonar_data_available;
+extern uint16_t sonar_meas;
+extern bool_t sonar_data_available;
 
 static struct adc_buf sonar_adc;
 

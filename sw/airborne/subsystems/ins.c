@@ -74,6 +74,8 @@ int32_t ins_baro_alt;
 bool_t  ins_update_on_agl;
 int32_t ins_sonar_offset;
 int32_t sonar_filtered = 0;
+uint16_t sonar_meas = 0;
+bool_t sonar_data_available = FALSE;
 #endif
 #endif
 bool_t  ins_vf_realign;

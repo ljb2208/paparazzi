@@ -15,10 +15,11 @@
   <init fun="maxbotix_init()"/>
   <periodic fun="maxbotix_read()" freq="10"/>
   <event fun="SonarEvent(ins_update_sonar)"/>
-  <makefile>
-    <file name="sonar_maxbotix.c"/>
+  <makefile target="sim">
+    <file name="sonar_sim.c"/>
   </makefile>
   <makefile target="ap">
+    <file name="sonar_maxbotix.c"/>
     <define name="ADC_CHANNEL_SONAR" value="$(ADC_SONAR)"/>
     <define name="USE_$(ADC_SONAR)"/>
     <define name="USE_SONAR"/>

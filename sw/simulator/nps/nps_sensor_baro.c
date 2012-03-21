@@ -28,7 +28,8 @@ void nps_sensor_baro_run_step(struct NpsSensorBaro* baro, double time) {
     double baro_reading = NPS_BARO_QNH + z * NPS_BARO_SENSITIVITY;
     baro_reading = rint(baro_reading);
     baro->value = baro_reading;
-    Bound(baro->value, 0, 1024);
+    //Bound(baro->value, 0, 1024);
+    Bound(baro->value, 0, 20000);
     //}
 
   baro->next_update += NPS_BARO_DT;

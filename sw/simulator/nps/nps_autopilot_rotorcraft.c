@@ -6,12 +6,12 @@
 #include "subsystems/radio_control.h"
 #include "subsystems/imu.h"
 #include "subsystems/sensors/baro.h"
+#include "modules/sonar/sonar_sim.h"
 #include "baro_board.h"
 #include "subsystems/electrical.h"
 #include "mcu_periph/sys_time.h"
 
 #include "actuators/supervision.h"
-
 
 struct NpsAutopilot autopilot;
 bool_t nps_bypass_ahrs;
@@ -66,6 +66,13 @@ void nps_autopilot_run_step(double time __attribute__ ((unused))) {
     gps_feed_value();
     main_event();
   }
+
+#if USE_SONAR
+  if (nps_sensors_sonar_available()) {
+  	sonar_feed_value();
+  	main_event();
+  }
+#endif
 
   if (nps_bypass_ahrs) {
     sim_overwrite_ahrs();

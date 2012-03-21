@@ -773,7 +773,7 @@ extern uint8_t telemetry_mode_Main_DefaultChannel;
 #endif
 
 #ifdef USE_SONAR
-		#define PERIODIC_SEND_SONAR(_trans, _dev) DOWNLINK_SEND_SONAR(_trans, _dev, &sonar_meas, &sonar_filtered, &ins_update_on_agl, 0);
+		#define PERIODIC_SEND_SONAR(_trans, _dev) {} DOWNLINK_SEND_SONAR(_trans, _dev, &sonar_meas, &sonar_filtered, &ins_update_on_agl, &ins_update_on_agl);
 #else
 		#define PERIODIC_SEND_SONAR(_trans, _dev) {}
 #endif

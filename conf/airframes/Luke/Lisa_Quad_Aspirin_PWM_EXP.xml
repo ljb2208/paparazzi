@@ -256,13 +256,14 @@
  </section>
 
   <firmware name="rotorcraft">
+<!--	<define name="INT_AND_DUMP" /> -->
      <define name="USE_PERSISTENT_SETTINGS"/>
      <define name="USE_INS_NAV_INIT"/>
      <define name="USE_ADAPT_HOVER"/>
 <!--     <define name="FAILSAFE_GROUND_DETECT"/> -->
      <define name="USE_GPS_ACC4R"/>
      <define name="USE_VFF" />
-<!--	<define name="BARO_LOW_GAIN" /> -->
+	<define name="BARO_LOW_GAIN" />
      <target name="ap" board="lisa_l_1.1">
       <subsystem name="radio_control" type="spektrum" />
       <subsystem name="actuators"     type="pwm_supervision"/>
@@ -278,13 +279,12 @@
 	<define name = "OVERRIDE_UART5_IRQ_HANDLER"/>
 <!--	<define name="RC_SPK_SYNC_2" value="0x12" /> -->
     </target>
-    <target name="sim" board="pc">
+    <target name="sim" board="pc">	
       <subsystem name="fdm"           type="nps"/>
-
       <subsystem name="radio_control" type="ppm"/>
       <subsystem name="actuators"     type="mkk"/>
       <subsystem name="imu"           type="b2_v1.1"/> <!-- use original imu for simulation -->
-
+	<define name="USE_SONAR" />
     </target>
     <subsystem name="telemetry"     type="transparent"/>
 

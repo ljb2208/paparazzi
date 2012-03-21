@@ -38,7 +38,11 @@ Q=@
 # Compilation flags
 #
 
-CFLAGS	= -W -Wall $(INCLUDES) -I$(PAPARAZZI_SRC)/sw/airborne/$(SRC_ARCH) $($(TARGET).CFLAGS) $(LOCAL_CFLAGS) -O2
+#CFLAGS	= -W -Wall $(INCLUDES) -I$(PAPARAZZI_SRC)/sw/airborne/$(SRC_ARCH) $($(TARGET).CFLAGS) $(LOCAL_CFLAGS) -O2 -g
+CFLAGS	= -W -Wall $(INCLUDES) -I$(PAPARAZZI_SRC)/sw/airborne/$(SRC_ARCH) $($(TARGET).CFLAGS) $(LOCAL_CFLAGS) -g
+
+@echo "Help*****************************"
+@echo $(CFLAGS)
 
 LDFLAGS		=	-lm $($(TARGET).LDFLAGS)
 

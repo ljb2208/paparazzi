@@ -47,6 +47,7 @@ sim.srcs += $(NPSDIR)/nps_main.c                      \
        $(NPSDIR)/nps_sensor_accel.c              \
        $(NPSDIR)/nps_sensor_mag.c                \
        $(NPSDIR)/nps_sensor_baro.c               \
+       $(NPSDIR)/nps_sensor_sonar.c               \
        $(NPSDIR)/nps_sensor_gps.c                \
        $(NPSDIR)/nps_radio_control.c             \
        $(NPSDIR)/nps_radio_control_joystick.c    \
@@ -75,7 +76,7 @@ sim.srcs += mcu_periph/sys_time.c $(SRC_ARCH)/mcu_periph/sys_time_arch.c
 sim.srcs += subsystems/settings.c
 sim.srcs += $(SRC_ARCH)/subsystems/settings_arch.c
 
-sim.CFLAGS += -DDOWNLINK -DDOWNLINK_TRANSPORT=IvyTransport
+sim.CFLAGS += -DDOWNLINK -DDOWNLINK_TRANSPORT=IvyTransport -DDOWNLINK_DEVICE=IvyDevice
 sim.srcs += $(SRC_FIRMWARE)/telemetry.c \
             subsystems/datalink/downlink.c \
             $(SRC_ARCH)/ivy_transport.c

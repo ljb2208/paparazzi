@@ -38,7 +38,7 @@ extern void imu_periodic(void);
 /** abstract IMU interface providing fixed point interface  */
 struct Imu {
   struct Int32Rates gyro;             ///< gyroscope measurements
-  struct Int32Vect3 accel;            ///< accelerometer measurements
+  struct Int32Vect3 accel;            ///< accelerometer measurement
   struct Int32Vect3 mag;              ///< magnetometer measurements
   struct Int32Rates gyro_prev;        ///< previous gyroscope measurements
   struct Int32Vect3 accel_prev;       ///< previous accelerometer measurements
@@ -108,7 +108,7 @@ extern void imu_init(void);
 
 #ifndef ImuScaleAccel
 #define ImuScaleAccel(_imu) {					\
-    VECT3_COPY(_imu.accel_prev, _imu.accel);				\
+    VECT3_COPY(_imu.accel_prev, _imu.accel); \
     _imu.accel.x = ((_imu.accel_unscaled.x - _imu.accel_neutral.x)*IMU_ACCEL_X_SIGN*IMU_ACCEL_X_SENS_NUM)/IMU_ACCEL_X_SENS_DEN; \
     _imu.accel.y = ((_imu.accel_unscaled.y - _imu.accel_neutral.y)*IMU_ACCEL_Y_SIGN*IMU_ACCEL_Y_SENS_NUM)/IMU_ACCEL_Y_SENS_DEN; \
     _imu.accel.z = ((_imu.accel_unscaled.z - _imu.accel_neutral.z)*IMU_ACCEL_Z_SIGN*IMU_ACCEL_Z_SENS_NUM)/IMU_ACCEL_Z_SENS_DEN; \

@@ -31,14 +31,11 @@
 
 #include "std.h"
 
-extern uint16_t sonar_meas;
-
-extern bool_t sonar_data_available;
+//extern uint16_t sonar_meas;
+//extern bool_t sonar_data_available;
 
 extern void maxbotix_init(void);
 extern void maxbotix_read(void);
-
-//#include "subsystems/ins.h" // needed because ins is not a module
 
 #define SonarEvent(_handler) { \
   if (sonar_data_available) { \

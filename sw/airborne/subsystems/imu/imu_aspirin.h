@@ -166,10 +166,10 @@ static inline void gyro_copy_i2c(void)
 
 static inline void accel_copy_spi(void)
 {
-  const int16_t ax = imu_aspirin.accel_rx_buf[1] | (imu_aspirin.accel_rx_buf[2]<<8);
-  const int16_t ay = imu_aspirin.accel_rx_buf[3] | (imu_aspirin.accel_rx_buf[4]<<8);
-  const int16_t az = imu_aspirin.accel_rx_buf[5] | (imu_aspirin.accel_rx_buf[6]<<8);
-  VECT3_ASSIGN(imu.accel_unscaled, ax, ay, az);
+	const int16_t ax = imu_aspirin.accel_rx_buf[1] | (imu_aspirin.accel_rx_buf[2]<<8);
+	const int16_t ay = imu_aspirin.accel_rx_buf[3] | (imu_aspirin.accel_rx_buf[4]<<8);
+	const int16_t az = imu_aspirin.accel_rx_buf[5] | (imu_aspirin.accel_rx_buf[6]<<8);
+	VECT3_ASSIGN(imu.accel_unscaled, ax, ay, az);
 }
 
 

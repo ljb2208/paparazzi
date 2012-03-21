@@ -38,8 +38,8 @@ int nps_radio_control_joystick_init(const char* device) {
 
 #define JS_ROLL     0
 #define JS_PITCH    1
-#define JS_YAW      2
-#define JS_THROTTLE 3
+#define JS_YAW      3
+#define JS_THROTTLE 2
 #define JS_NB_AXIS  7
 
 // buttons to switch modes
@@ -61,7 +61,7 @@ static gboolean on_js_data_received(GIOChannel *source,
       switch (js.number) {
       case JS_THROTTLE:
         nps_joystick.throttle = ((float)js.value - 32767.)/-65534.;
-        //printf("joystick throttle %d\n",js.value);
+        printf("joystick throttle %d\n",js.value);
         break;
       case JS_ROLL:
         nps_joystick.roll = (float)js.value/-32767.;
@@ -74,7 +74,7 @@ static gboolean on_js_data_received(GIOChannel *source,
       case JS_YAW:
         //nps_joystick.yaw = 0.;
         nps_joystick.yaw = (float)js.value/-32767.;
-        //printf("joystick yaw %d %f\n",js.value, nps_joystick.yaw);
+        printf("joystick yaw %d %f\n",js.value, nps_joystick.yaw);
         break;
       }
     }
@@ -83,12 +83,15 @@ static gboolean on_js_data_received(GIOChannel *source,
     switch (js.number) {
     case JS_MODE_MANUAL:
       nps_joystick.mode = MODE_SWITCH_MANUAL;
+      printf("joystick mode manual\n");
       break;
     case JS_MODE_AUTO1:
       nps_joystick.mode = MODE_SWITCH_AUTO1;
+      printf("joystick mode auto1\n");
       break;
     case JS_MODE_AUTO2:
       nps_joystick.mode = MODE_SWITCH_AUTO2;
+      printf("joystick mode auto2\n");
       break;
     }
   }
