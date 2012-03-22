@@ -45,16 +45,6 @@
 #warning "ALL control gains are now positive!!!"
 #endif
 
-<<<<<<< HEAD
-/* In case Asctec controllers are used without supervision */
-#ifndef SUPERVISION_MIN_MOTOR_CMD
-#define SUPERVISION_MIN_MOTOR_CMD 3
-#endif
-#ifndef SUPERVISION_MAX_MOTOR_CMD
-#define SUPERVISION_MAX_MOTOR_CMD 200
-#endif
-=======
->>>>>>> upstream/4.0_beta
 
 uint8_t guidance_v_mode;
 int32_t guidance_v_ff_cmd;
@@ -156,18 +146,7 @@ void guidance_v_run(bool_t in_flight) {
   // FIXME... SATURATIONS NOT TAKEN INTO ACCOUNT
   // AKA SUPERVISION and co
   if (in_flight) {
-<<<<<<< HEAD
-    // we should use something after the supervision!!! fuck!!!
-    int32_t cmd_hack = Chop(stabilization_cmd[COMMAND_THRUST], SUPERVISION_MIN_MOTOR_CMD, SUPERVISION_MAX_MOTOR_CMD);
-    gv_adapt_run(ins_ltp_accel.z, cmd_hack);
-    //gv_adapt_run(ins_ltp_accel.z, cmd_hack, guidance_v_zd_ref);
-  }
-  else {
-    // reset vertical filter until takeoff
-    //ins_vf_realign = TRUE;
-=======
     gv_adapt_run(ins_ltp_accel.z, stabilization_cmd[COMMAND_THRUST], guidance_v_zd_ref);
->>>>>>> upstream/4.0_beta
   }
 
   switch (guidance_v_mode) {
@@ -297,15 +276,9 @@ __attribute__ ((always_inline)) static inline void run_hover_loop(bool_t in_flig
                       ((guidance_v_kd * err_zd) >> 21) +
                       ((guidance_v_ki * guidance_v_z_sum_err) >> 21);
 
-<<<<<<< HEAD
   // z-axis pointing down -> positive error means we need less thrust
   //guidance_v_delta_t = - (guidance_v_ff_cmd + guidance_v_fb_cmd);
   guidance_v_delta_t =  (guidance_v_ff_cmd + guidance_v_fb_cmd);
   // guidance_v_delta_t = -guidance_v_fb_cmd;
-
-=======
-// z-axis pointing down -> positive error means we need less thrust
-  guidance_v_delta_t = -(guidance_v_ff_cmd + guidance_v_fb_cmd);
->>>>>>> upstream/4.0_beta
 
 }
