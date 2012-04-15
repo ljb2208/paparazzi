@@ -16,6 +16,7 @@
       <message name="BOOZ2_CAM"              period="1."/>
       <message name="GPS_INT"                period=".25"/>
       <message name="INS"                    period=".25"/>
+	<message name="SONAR"			period=".1" />
     </mode>
 
     <mode name="ppm">
