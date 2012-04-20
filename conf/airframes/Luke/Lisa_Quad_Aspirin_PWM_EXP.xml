@@ -229,6 +229,7 @@
    <define name="MIN_ERR_ZD"  value="SPEED_BFP_OF_REAL(-100.)"/>
    <define name="MAX_ERR_ZD"  value="SPEED_BFP_OF_REAL( 100.)"/>
    <define name="MAX_SUM_ERR" value="2000000"/>
+   <define name="GUIDANCE_V_NOMINAL_HOVER_THROTTLE" value="0.45" />
 
 <!--
    <define name="HOVER_KP"    value="-500"/>
@@ -269,7 +270,7 @@
   <firmware name="rotorcraft">
      <define name="USE_PERSISTENT_SETTINGS"/>
      <define name="USE_INS_NAV_INIT"/>
-     <define name="USE_ADAPT_HOVER"/>
+<!--     <define name="USE_ADAPT_HOVER"/> -->
 <!--     <define name="FAILSAFE_GROUND_DETECT"/> -->
      <define name="USE_GPS_ACC4R"/>
     <define name="USE_VFF" />
