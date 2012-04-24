@@ -46,7 +46,8 @@
       <dl_setting var="guidance_v_ki" min="0" step="1" max="1000"   module="guidance/guidance_v" shortname="ki" handler="SetKi" />
       <dl_setting var="guidance_v_z_sp" min="0" step="0.1" max="3" module="guidance/guidance_v" shortname="sp" unit="2e-8m" alt_unit="m" alt_unit_coef="0.00390625"/>
       <dl_setting var="ins_vf_realign" min="0" step="1" max="1" module="subsystems/ins" shortname="vf_realign" values="OFF|ON"/>
-      <dl_setting var="guidance_v_nominal_throttle" min="0" step="0.01" max="1" module="guidance/guidance_v" shortname="hover_throttle"/>
+      <dl_setting var="guidance_v_nominal_throttle" min="0" step="1" max="9999" module="guidance/guidance_v" shortname="hover_throttle"/>
+      <dl_setting var="ins_update_on_agl" min="0" step="1" max="1" module="subsystems/ins" shortname="update_agl" values="OFF|ON"/>
    </dl_settings>
 
    <dl_settings NAME="Horiz Loop">
