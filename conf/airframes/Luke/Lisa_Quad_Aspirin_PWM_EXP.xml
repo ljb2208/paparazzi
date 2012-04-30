@@ -127,8 +127,8 @@
 
 <!--    <define name="BODY_TO_IMU_PHI"   value="RadOfDeg(   0.5 )"/>
     <define name="BODY_TO_IMU_THETA" value="RadOfDeg(   -1.8 )"/> -->
-    <define name="BODY_TO_IMU_PHI"   value="RadOfDeg(   0.5 )"/>
-    <define name="BODY_TO_IMU_THETA" value="RadOfDeg(   0.0 )"/>
+    <define name="BODY_TO_IMU_PHI"   value="RadOfDeg(   1.2 )"/>
+    <define name="BODY_TO_IMU_THETA" value="RadOfDeg(   -0.8 )"/>
     <define name="BODY_TO_IMU_PSI"   value="RadOfDeg(   0. )"/>
 
   </section>
@@ -137,7 +137,7 @@
    <define name="MODE_MANUAL" value="AP_MODE_RATE_DIRECT"/>
    <define name="MODE_AUTO1"  value="AP_MODE_RATE_Z_HOLD"/>
 <!--   <define name="MODE_AUTO2"  value="AP_MODE_ATTITUDE_DIRECT"/> -->
-   <define name="MODE_AUTO2"  value="AP_MODE_HOVER_DIRECT"/>
+   <define name="MODE_AUTO2"  value="AP_MODE_HOVER_Z_HOLD"/>
 
  </section>
 
