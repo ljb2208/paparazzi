@@ -274,6 +274,7 @@
 <!--     <define name="FAILSAFE_GROUND_DETECT"/> -->
      <define name="USE_GPS_ACC4R"/>
     <define name="USE_VFF" />
+    <define name="USE_HFF" />
 	<define name="BARO_LOW_GAIN" />
      <target name="ap" board="lisa_l_1.1">
       <subsystem name="radio_control" type="spektrum" />

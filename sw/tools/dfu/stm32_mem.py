@@ -74,21 +74,25 @@ if __name__ == "__main__":
 		print "No devices found!"
 		exit(-1)
 
-	for dev in devs:
-		dfudev = dfu.dfu_device(*dev)
-		try:
-			man = dfudev.handle.getString(dfudev.dev.iManufacturer, 30)
-			product = dfudev.handle.getString(dfudev.dev.iProduct, 30)
-			serial = dfudev.handle.getString(dfudev.dev.iSerialNumber, 40)
+	for dev in devs:		
+		dfudev = dfu.dfu_device(*dev)		
+		try:									
+			serial = dfudev.handle.getString(dfudev.dev.iSerialNumber, 40)					
+			man = dfudev.handle.getString(dfudev.dev.iManufacturer, 30)				
+			product = dfudev.handle.getString(dfudev.dev.iProduct, 30)						
 		except:
 			print "Could not access the description strings of a DFU device. Maybe the OS driver is claiming it?"
 			continue
 		if man == "Black Sphere Technologies": break
 		if man == "Transition Robotics Inc.": break
 		if man == "STMicroelectronics": break
+		
+	if not dev:
+		print "Device not found!"
+		exit(-1)
 
-	print "Device %s: ID %04x:%04x %s - %s - %s" % (dfudev.dev.filename, 
-		dfudev.dev.idVendor, dfudev.dev.idProduct, man, product, serial)
+#	print "Device %s: ID %04x:%04x %s - %s - %s" % (dfudev.dev.filename, 
+#		dfudev.dev.idVendor, dfudev.dev.idProduct, man, product, serial)
 
 	try:
 		state = dfudev.get_state()

@@ -260,7 +260,7 @@
   </section>
 
   <firmware name="rotorcraft">
-     <configure name="FLASH_MODE" value="JTAG"/>
+<!--     <configure name="FLASH_MODE" value="JTAG"/> -->
      <define name="USE_PERSISTENT_SETTINGS"/>
      <define name="USE_INS_NAV_INIT"/>
      <define name="USE_ADAPT_HOVER"/>
