@@ -42,9 +42,9 @@
 #include "stabilization.h"
 #endif
 
-#include "stm32/can.h"
-#include "csc_msg_def.h"
-#include "csc_protocol.h"
+//#include "stm32/can.h"
+//#include "csc_msg_def.h"
+//#include "csc_protocol.h"
 
 #include "subsystems/sensors/baro.h"
 
@@ -63,16 +63,16 @@ static inline void on_overo_link_lost(void);
 static inline void on_overo_link_crc_failed(void);
 
 static inline void on_rc_message(void);
-static inline void on_vane_msg(void *data);
+//static inline void on_vane_msg(void *data);
 
 static bool_t new_radio_msg;
 static bool_t new_baro_diff;
 static bool_t new_baro_abs;
-static bool_t new_vane;
+//static bool_t new_vane;
 static bool_t new_adc;
 
 
-struct CscVaneMsg csc_vane_msg;
+//struct CscVaneMsg csc_vane_msg;
 
 static struct adc_buf adc0_buf;
 static struct adc_buf adc1_buf;
@@ -81,7 +81,7 @@ static struct adc_buf adc3_buf;
 
 extern uint8_t adc_new_data_trigger;
 
-struct CscServoCmd csc_servo_cmd;
+//struct CscServoCmd csc_servo_cmd;
 
 #define ActuatorsCommit() actuators_pwm_commit();
 #define actuators actuators_pwm_values
@@ -112,7 +112,7 @@ static inline void main_init(void) {
 	radio_control_init();
 	actuators_init();
 	overo_link_init();
-	cscp_init();
+//	cscp_init();
 
 #ifdef PASSTHROUGH_CYGNUS
 	autopilot_init();
@@ -132,11 +132,11 @@ static inline void main_init(void) {
 	adc_buf_channel(2, &adc2_buf, 8);
 	adc_buf_channel(3, &adc3_buf, 8);
 
-	cscp_register_callback(CSC_VANE_MSG_ID, on_vane_msg, (void *)&csc_vane_msg);
+//	cscp_register_callback(CSC_VANE_MSG_ID, on_vane_msg, (void *)&csc_vane_msg);
 	new_radio_msg = FALSE;
 	new_baro_diff = FALSE;
 	new_baro_abs = FALSE;
-	new_vane = FALSE;
+	//new_vane = FALSE;
 	new_adc = FALSE;
 
 	overo_link.up.msg.imu_tick = 0;
@@ -195,7 +195,7 @@ static inline void on_rc_message(void) {
 #endif
 	}
 #ifndef PASSTHROUGH_CYGNUS
-	if (radio_control.values[RADIO_KILL] > 150) {
+	if (radio_control.values[RADIO_KILL_SWITCH] > 150) {
 		actuators[SERVO_THROTTLE] = SERVO_THROTTLE_MIN;
 		ActuatorsCommit();
 	}
@@ -242,10 +242,10 @@ static inline void on_overo_link_msg_received(void) {
 	overo_link.up.msg.pressure_absolute     = baro.absolute;
 
 	/* vane up */
-	overo_link.up.msg.valid.vane =  new_vane;
+	/*overo_link.up.msg.valid.vane =  new_vane;
 	new_vane = FALSE;
 	overo_link.up.msg.vane_angle1 = csc_vane_msg.vane_angle1;
-	overo_link.up.msg.vane_angle2 = csc_vane_msg.vane_angle2;
+	overo_link.up.msg.vane_angle2 = csc_vane_msg.vane_angle2;*/
 
 	/* adc up */
 	overo_link.up.msg.adc.channels[0] = adc0_buf.sum / adc0_buf.av_nb_sample;
@@ -315,6 +315,7 @@ static inline void on_mag_event(void) {
 #endif
 }
 
+/*
 static inline void on_vane_msg(void *data) {
 	new_vane = TRUE;
 	int zero = 0;
@@ -330,6 +331,7 @@ static inline void on_vane_msg(void *data) {
 				&zero,
 				&zero);
 }
+*/
 
 static inline void main_on_baro_diff(void) {
 	new_baro_diff = TRUE;
@@ -345,5 +347,5 @@ static inline void main_event(void) {
 	BaroEvent(main_on_baro_abs, main_on_baro_diff);
 	OveroLinkEvent(on_overo_link_msg_received, on_overo_link_crc_failed);
 	RadioControlEvent(on_rc_message);
-	cscp_event();
+//	cscp_event();
 }

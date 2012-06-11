@@ -1,11 +1,10 @@
 <!-- this is a frame equiped with  Lisa/L#3 and Mikrokopter Controllers controllers -->
-
-<airframe name="Luke_Quad">
+<airframe name="Luke_Quad_Pwm_Exp">
 
  <modules main_freq="512">
     <load name="sonar_maxbotix_booz.xml">
 	<define name="USE_AD1_1" />
-      <configure name="ADC_SONAR" value="1"/>
+      <configure name="ADC_SONAR" value="0"/>
     </load>
   </modules>
 
@@ -216,10 +215,10 @@
 
 
   <section name="INS" prefix="INS_">
-    <define name="BARO_SENS" value="10." integer="16"/>
+    <define name="BARO_SENS" value="3.3" integer="16"/>
 <!--    <define name="UNTILT_ACCEL" value="1"/> -->
-    <define name="SONAR_SENS_NUM" value="1"/>
-    <define name="SONAR_SENS_DEN" value="0.33" /> 
+    <define name="SONAR_SENS_NUM" value="-1"/>
+    <define name="SONAR_SENS_DEN" value="1" /> 
     <define name="SONAR_CORRECT_ANGLE" value="1" />
   </section>
 
@@ -275,7 +274,7 @@
      <define name="USE_GPS_ACC4R"/>
     <define name="USE_VFF" />
     <define name="USE_HFF" />
-	<define name="BARO_LOW_GAIN" />
+    <define name="BARO_LOW_GAIN" />
      <target name="ap" board="lisa_l_1.1">
       <subsystem name="radio_control" type="spektrum" />
       <subsystem name="actuators"     type="pwm_supervision"/>
@@ -285,11 +284,9 @@
 	<define name="RADIO_MODE" value="RADIO_AUX2" />
 	<define name="RADIO_KILL_SWITCH" value="RADIO_GEAR" /> 
 	<define name="BOOZ_START_DELAY" value="3"/> 
-<!--	<define name="RADIO_CONTROL_SPEKTRUM_SIGNS" value="\{-1,1,1,1,1,1,1,1,1\}" /> -->
 	<define name="RADIO_CONTROL_SPEKTRUM_SIGNS" value="\{1,-1,-1,-1,1,1,1,1,1\}" />
 	<define name = "RADIO_CONTROL_SPEKTRUM_SECONDARY_PORT" value = "UART5"/>
 	<define name = "OVERRIDE_UART5_IRQ_HANDLER"/>
-<!--	<define name="RC_SPK_SYNC_2" value="0x12" /> -->
     </target>
     <target name="sim" board="pc">
       <subsystem name="fdm"           type="nps"/>
@@ -302,15 +299,12 @@
     <subsystem name="telemetry"     type="transparent"/>
 
     <subsystem name="gps"           type="ublox" />
-<!--      <configure name="GPS_BAUD"    value="B57600"/>
-    </subsystem>-->
-    <!--subsystem name="ahrs"          type="int_cmpl_euler"/-->
     <subsystem name="stabilization"   type="euler"/>
     <subsystem name="ahrs"          type="int_cmpl_euler"/>
     <subsystem name="ins"           type="hff"/>
   </firmware>
 
-  <firmware name="lisa_l_test_progs">
+  <firmware name="lisa_test_progs">
     <target name="test_led"                 board="lisa_l_1.1"/>
     <target name="test_uart"                board="lisa_l_1.1"/>
     <target name="test_servos"              board="lisa_l_1.1"/>
@@ -340,6 +334,7 @@
     <target name="test_actuators_asctecv1"  board="lisa_l_1.1"/>
     <target name="tunnel_sw"                board="lisa_l_1.1"/>
     <target name="tunnel_hw"                board="lisa_l_1.1"/>
+    <target name="test_overo"                board="lisa_l_1.1"/>
   </firmware>
 
   <firmware name="lisa_passthrough">
@@ -354,6 +349,4 @@
       <subsystem name="imu" type="b2_v1.1"/>
     </target>
  </firmware>
-
-
 </airframe>

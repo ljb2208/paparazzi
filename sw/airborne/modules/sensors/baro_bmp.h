@@ -38,8 +38,8 @@ extern uint8_t  baro_bmp_status;
 extern uint32_t baro_bmp_pressure;
 extern uint16_t baro_bmp_temperature;
 
-void baro_bmp_init(void);
-void baro_bmp_periodic(void);
-void baro_bmp_event(void);
+extern void baro_bmp_init(void);
+extern void baro_bmp_periodic(void);
+extern void baro_bmp_event(void);
 
 #endif

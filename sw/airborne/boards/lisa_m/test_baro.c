@@ -37,6 +37,7 @@
 #include "subsystems/datalink/downlink.h"
 
 #include "subsystems/sensors/baro.h"
+//#include "boards/lisa_m/baro_board.h"
 //#include "my_debug_servo.h"
 
 static inline void main_init( void );
@@ -77,19 +78,19 @@ static inline void main_periodic_task( void ) {
   RunOnceEvery(2, {baro_periodic();});
   LED_PERIODIC();
   RunOnceEvery(256, {DOWNLINK_SEND_ALIVE(DefaultChannel, DefaultDevice, 16, MD5SUM);});
-  RunOnceEvery(256,
-    {
-      DOWNLINK_SEND_I2C_ERRORS(DefaultChannel, DefaultDevice,
-			       &i2c2_errors.ack_fail_cnt,
-			       &i2c2_errors.miss_start_stop_cnt,
-			       &i2c2_errors.arb_lost_cnt,
-			       &i2c2_errors.over_under_cnt,
-			       &i2c2_errors.pec_recep_cnt,
-			       &i2c2_errors.timeout_tlow_cnt,
-			       &i2c2_errors.smbus_alert_cnt,
-			       &i2c2_errors.unexpected_event_cnt,
-			       &i2c2_errors.last_unexpected_event);
-    });
+//  RunOnceEvery(256,
+//    {
+//      DOWNLINK_SEND_I2C_ERRORS(DefaultChannel, DefaultDevice,
+//			       &i2c2_errors.ack_fail_cnt,
+//			       &i2c2_errors.miss_start_stop_cnt,
+//			       &i2c2_errors.arb_lost_cnt,
+//			       &i2c2_errors.over_under_cnt,
+//			       &i2c2_errors.pec_recep_cnt,
+//			       &i2c2_errors.timeout_tlow_cnt,
+//			       &i2c2_errors.smbus_alert_cnt,
+//			       &i2c2_errors.unexpected_event_cnt,
+//			       &i2c2_errors.last_unexpected_event);
+//    });
 }
 
 

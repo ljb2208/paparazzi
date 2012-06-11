@@ -2,13 +2,14 @@
 
 <airframe name="Luke_Quad">
 
-<!-- <modules main_freq="512">
-    <load name="adc_generic.xml">
-	<define name="USE_AD1_1" />
-	<configure name="ADC_CHANNEL_GENERIC1" value="1" />
-    </load>
-  </modules> -->
 
+
+ <modules main_freq="512">
+    <load name="sonar_maxbotix_booz.xml">
+	<define name="USE_AD1_1" />
+      <configure name="ADC_SONAR" value="0"/>
+    </load>
+  </modules>
 
   <servos min="0" neutral="0" max="0xff">
     <servo name="FRONT"   no="0" min="1000" neutral="1000" max="2000"/>
@@ -207,10 +208,6 @@
     <define name="H_Z" value=" -0.26217570"/>
   </section>
 
-
-  <section name="INS" prefix="INS_">
-  </section>
-
  <section name="GUIDANCE_V" prefix="GUIDANCE_V_">
    <define name="MIN_ERR_Z"   value="POS_BFP_OF_REAL(-100.)"/>
    <define name="MAX_ERR_Z"   value="POS_BFP_OF_REAL( 100.)"/>
@@ -257,16 +254,19 @@
 
   <section name="INS" prefix="INS_">
     <define name="BARO_SENS" value="10." integer="16"/>
+    <define name="SONAR_SENS_NUM" value="-2"/>
+    <define name="SONAR_SENS_DEN" value="1" /> 
   </section>
 
   <firmware name="rotorcraft">
-<!--     <configure name="FLASH_MODE" value="JTAG"/> -->
+    <configure name="FLASH_MODE" value="JTAG"/> 
      <define name="USE_PERSISTENT_SETTINGS"/>
      <define name="USE_INS_NAV_INIT"/>
      <define name="USE_ADAPT_HOVER"/>
 <!--     <define name="FAILSAFE_GROUND_DETECT"/> -->
      <define name="USE_GPS_ACC4R"/>
      <define name="USE_VFF" /> 
+     <define name="USE_SERVOS_7AND8"/>
      <target name="ap" board="lisa_m_2.0">
       <subsystem name="radio_control" type="spektrum" />
       <subsystem name="actuators"     type="pwm_supervision"/>
@@ -296,6 +296,7 @@
   </firmware>
 
    <firmware name="lisa_test_progs">
+ <configure name="FLASH_MODE" value="JTAG"/> 
     <target name="test_led"			board="lisa_m_2.0"/>
     <target name="test_uart_lisam"			board="lisa_m_2.0"/>
     <target name="test_servos"			board="lisa_m_2.0"/>
@@ -303,6 +304,7 @@
     <target name="test_imu_aspirin"			board="lisa_m_2.0"/>
     <target name="test_rc_spektrum"		board="lisa_m_2.0"/>
     <target name="test_baro"			board="lisa_m_2.0"/>
+    <target name="test_adc"                 board="lisa_m_2.0"/>
   </firmware>
 
 

@@ -183,7 +183,7 @@ test_baro.srcs   += $(COMMON_TELEMETRY_SRCS)
 test_baro.CFLAGS += -I$(SRC_LISA) -I$(SRC_BOARD)
 test_baro.srcs   += $(SRC_BOARD)/test_baro.c
 test_baro.srcs   += $(SRC_BOARD)/baro_board.c
-test_baro.CFLAGS += -DUSE_I2C2
+test_baro.CFLAGS += -DUSE_I2C2 
 test_baro.srcs   += mcu_periph/i2c.c $(SRC_ARCH)/mcu_periph/i2c_arch.c
 
 
@@ -470,7 +470,21 @@ test_adxl345.srcs   += lisa/test/lisa_test_adxl345_dma.c
 test_adxl345.CFLAGS += -DUSE_EXTI2_IRQ   # Accel Int on PD2
 test_adxl345.CFLAGS += -DUSE_DMA1_C4_IRQ # SPI2 Rx DMA
 
+#test overo spi link
+test_overo.ARCHDIR = $(ARCH)
+test_overo.CFLAGS  = $(COMMON_TEST_CFLAGS)
+test_overo.srcs    = $(COMMON_TEST_SRCS)
+test_overo.CFLAGS += $(COMMON_TELEMETRY_CFLAGS)
+test_overo.srcs   += $(COMMON_TELEMETRY_SRCS)
 
+test_overo.CFLAGS += -I$(SRC_LISA)
+test_overo.CFLAGS += -DOVERO_LINK_MSG_UP=AutopilotMessagePTUp
+test_overo.CFLAGS += -DOVERO_LINK_MSG_DOWN=AutopilotMessagePTDown
+test_overo.srcs   += lisa/arch/stm32/lisa_overo_link_arch.c
+test_overo.srcs   += lisa/lisa_overo_link.c
+test_overo.srcs   += lisa/test/lisa_test_overo.c
+#test_overo.CFLAGS += -DUSE_EXTI2_IRQ   # Accel Int on PD2
+#test_overo.CFLAGS += -DUSE_DMA1_C4_IRQ # SPI2 Rx DMA
 
 #
 # simple test of mikrokopter motor controllers

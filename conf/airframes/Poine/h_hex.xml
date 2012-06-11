@@ -15,6 +15,7 @@
     <axis name="ROLL"   failsafe_value="0"/>
     <axis name="YAW"    failsafe_value="0"/>
     <axis name="THRUST" failsafe_value="0"/>
+    <axis name="THROTTLE" failsafe_value="0" />
   </commands>
 
   <section name="ACTUATORS_MKK" prefix="ACTUATORS_MKK_">

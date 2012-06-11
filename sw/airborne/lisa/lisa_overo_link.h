@@ -36,8 +36,9 @@ extern void overo_link_periodic(void);
 extern void overo_link_arch_init(void);
 extern void overo_link_arch_prepare_next_transfert(void);
 
+// fix me - need to remove absolute reference
 #ifndef SITL
-#include "lisa_overo_link_arch.h"
+#include "lisa/arch/stm32/lisa_overo_link_arch.h"
 #endif
 
 #if 0  /* that doesn't work yet */

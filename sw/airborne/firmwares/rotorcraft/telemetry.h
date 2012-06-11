@@ -796,7 +796,7 @@
 
 #ifdef USE_SONAR
 #define PERIODIC_SEND_SONAR(_trans, _dev) DOWNLINK_SEND_SONAR(_trans, _dev,      \
-		&sonar_data_available, &sonar_meas, &sonar_filtered);
+		&sonar_data_available, &sonar_meas, &ins_sonar_alt);
 #else
 #define PERIODIC_SEND_SONAR(_trans, _dev) DOWNLINK_SEND_SONAR(_trans, _dev, 			\
 		0, 0, 0);
