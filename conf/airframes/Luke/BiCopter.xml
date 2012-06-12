@@ -15,7 +15,7 @@
     <servo name="BACK_LEFT_4"   no="3" min="1090" neutral="1460" max="1830"/>
     <servo name="BACK_RIGHT_5"   no="4" min="1090" neutral="1460" max="1830"/>
     <servo name="BACK_REAR_6"   no="5" min="1090" neutral="1460" max="1830"/>
-    <servo name="ESC"   no="6" min="1200" neutral="1600" max="1800"/>
+    <servo name="ESC"   no="6" min="1200" neutral="1200" max="1800"/>
   </servos>
 
   <section name="MIXER">
