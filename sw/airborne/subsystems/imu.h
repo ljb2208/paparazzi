@@ -76,21 +76,46 @@ extern struct Imu imu;
 
 extern void imu_init(void);
 
+
+#if !defined IMU_BODY_TO_IMU_PHI && !defined IMU_BODY_TO_IMU_THETA && !defined IMU_BODY_TO_IMU_PSI
+#define IMU_BODY_TO_IMU_PHI   0
+#define IMU_BODY_TO_IMU_THETA 0
+#define IMU_BODY_TO_IMU_PSI   0
+#endif
+
+#if !defined IMU_GYRO_P_NEUTRAL && !defined IMU_GYRO_Q_NEUTRAL && !defined IMU_GYRO_R_NEUTRAL
+#define IMU_GYRO_P_NEUTRAL 0
+#define IMU_GYRO_Q_NEUTRAL 0
+#define IMU_GYRO_R_NEUTRAL 0
+#endif
+
+#if !defined IMU_ACCEL_X_NEUTRAL && !defined IMU_ACCEL_Y_NEUTRAL && !defined IMU_ACCEL_Z_NEUTRAL
+#define IMU_ACCEL_X_NEUTRAL 0
+#define IMU_ACCEL_Y_NEUTRAL 0
+#define IMU_ACCEL_Z_NEUTRAL 0
+#endif
+
+
+#ifndef ImuScaleGyro
 #define ImuScaleGyro(_imu) {					\
     RATES_COPY(_imu.gyro_prev, _imu.gyro);				\
     _imu.gyro.p = ((_imu.gyro_unscaled.p - _imu.gyro_neutral.p)*IMU_GYRO_P_SIGN*IMU_GYRO_P_SENS_NUM)/IMU_GYRO_P_SENS_DEN; \
     _imu.gyro.q = ((_imu.gyro_unscaled.q - _imu.gyro_neutral.q)*IMU_GYRO_Q_SIGN*IMU_GYRO_Q_SENS_NUM)/IMU_GYRO_Q_SENS_DEN; \
     _imu.gyro.r = ((_imu.gyro_unscaled.r - _imu.gyro_neutral.r)*IMU_GYRO_R_SIGN*IMU_GYRO_R_SENS_NUM)/IMU_GYRO_R_SENS_DEN; \
   }
+#endif
 
 
+#ifndef ImuScaleAccel
 #define ImuScaleAccel(_imu) {					\
     VECT3_COPY(_imu.accel_prev, _imu.accel);				\
     _imu.accel.x = ((_imu.accel_unscaled.x - _imu.accel_neutral.x)*IMU_ACCEL_X_SIGN*IMU_ACCEL_X_SENS_NUM)/IMU_ACCEL_X_SENS_DEN; \
     _imu.accel.y = ((_imu.accel_unscaled.y - _imu.accel_neutral.y)*IMU_ACCEL_Y_SIGN*IMU_ACCEL_Y_SENS_NUM)/IMU_ACCEL_Y_SENS_DEN; \
     _imu.accel.z = ((_imu.accel_unscaled.z - _imu.accel_neutral.z)*IMU_ACCEL_Z_SIGN*IMU_ACCEL_Z_SENS_NUM)/IMU_ACCEL_Z_SENS_DEN; \
   }
+#endif
 
+#ifndef ImuScaleMag
 #if defined IMU_MAG_45_HACK
 #define ImuScaleMag(_imu) {						\
     int32_t msx = ((_imu.mag_unscaled.x - _imu.mag_neutral.x) * IMU_MAG_X_SIGN * IMU_MAG_X_SENS_NUM) / IMU_MAG_X_SENS_DEN; \
@@ -105,7 +130,8 @@ extern void imu_init(void);
     _imu.mag.y = ((_imu.mag_unscaled.y - _imu.mag_neutral.y) * IMU_MAG_Y_SIGN * IMU_MAG_Y_SENS_NUM) / IMU_MAG_Y_SENS_DEN; \
     _imu.mag.z = ((_imu.mag_unscaled.z - _imu.mag_neutral.z) * IMU_MAG_Z_SIGN * IMU_MAG_Z_SENS_NUM) / IMU_MAG_Z_SENS_DEN; \
   }
-#endif
+#endif //IMU_MAG_45_HACK
+#endif //ImuScaleMag
 
 
 #endif /* IMU_H */

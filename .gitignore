@@ -60,7 +60,6 @@
 /conf/conf.xml.20*
 /conf/control_panel.xml
 /conf/%gconf.xml
-/conf/srtm_data/*
 /conf/maps_data/*
 /conf/maps.xml
 /conf/gps/ublox_conf
@@ -134,6 +133,7 @@
 /sw/logalizer/ivy_example
 /sw/logalizer/motor_bench
 /sw/logalizer/tmclient
+/sw/logalizer/openlog2tlm
 
 # /sw/simulator/
 /sw/simulator/gaia
@@ -170,3 +170,18 @@
 /sw/airborne/test/test_algebra
 /sw/airborne/test/test_matrix
 /sw/airborne/test/test_att
+
+/sw/airborne/test/ahrs/run_ahrs_on_synth
+
+# Mac OS X
+.DS_Store
+
+sw/ground_segment/lpc21iap/lpc21iap.dSYM/Contents/Info.plist
+
+sw/ground_segment/lpc21iap/lpc21iap.dSYM/Contents/Resources/DWARF/lpc21iap
+
+tests/results/*
+
+sw/logalizer/plotprofile.dSYM/Contents/Resources/DWARF/plotprofile
+
+sw/logalizer/plotprofile.dSYM/Contents/Info.plist

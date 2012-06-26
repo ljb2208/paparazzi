@@ -21,21 +21,21 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#include <stm32/gpio.h>
-#include <stm32/flash.h>
-#include <stm32/misc.h>
-#include <stm32/exti.h>
-#include <stm32/spi.h>
-#include <stm32/dma.h>
+#include <libopencm3/stm32/f1/gpio.h>
+#include <libopencm3/stm32/exti.h>
+#include <libopencm3/stm32/spi.h>
+#include <libopencm3/stm32/f1/dma.h>
 
 #include BOARD_CONFIG
 #include "mcu.h"
+
+#include "mcu_periph/sys_time.h"
 #include "mcu_periph/uart.h"
-#include "sys_time.h"
-#include "downlink.h"
+#include "subsystems/datalink/downlink.h"
 
 #include "peripherals/adxl345.h"
-//#include "my_debug_servo.h"
+#include "my_debug_servo.h"
+#include "led.h"
 
 static inline void main_init( void );
 static inline void main_periodic_task( void );
@@ -44,15 +44,20 @@ static inline void main_event_task( void );
 static inline void main_init_hw(void);
 static inline void enable_hw(void);
 
+<<<<<<< HEAD
 extern void exti2_irq_handler(void);
 extern void exti4_irq_handler(void);
 void dma1_c4_irq_handler(void);
+=======
+void exti2_isr(void);
+void dma1_channel4_isr(void);
+>>>>>>> upstream/master
 
 int main(void) {
   main_init();
 
   while(1) {
-    if (sys_time_periodic())
+    if (sys_time_check_and_ack_timer(0))
       main_periodic_task();
     main_event_task();
   }
@@ -62,7 +67,7 @@ int main(void) {
 
 static inline void main_init( void ) {
   mcu_init();
-  sys_time_init();
+  sys_time_register_timer((1./PERIODIC_FREQUENCY), NULL);
   main_init_hw();
   enable_hw();
 }
@@ -82,6 +87,9 @@ static uint8_t dma_rx_buf[7];
 
 static void write_to_reg(uint8_t addr, uint8_t val) {
 
+#warning "Needs porting to libopencm3 or the real driver!"
+
+#if 0
   AccSelect();
   SPI_I2S_SendData(SPI2, addr);
   while (SPI_I2S_GetFlagStatus(SPI2, SPI_I2S_FLAG_TXE) == RESET);
@@ -89,10 +97,17 @@ static void write_to_reg(uint8_t addr, uint8_t val) {
   while (SPI_I2S_GetFlagStatus(SPI2, SPI_I2S_FLAG_TXE) == RESET);
   while (SPI_I2S_GetFlagStatus(SPI2, SPI_I2S_FLAG_BSY) == SET);
   AccUnselect();
+#endif
 
 }
 
 static uint8_t read_fom_reg(uint8_t addr) {
+
+  uint8_t ret;
+
+#warning "Needs porting to libopencm3 or the real driver!"
+
+#if 0
   AccSelect();
   SPI_I2S_SendData(SPI2, (1<<7|addr));
   while (SPI_I2S_GetFlagStatus(SPI2, SPI_I2S_FLAG_TXE) == RESET);
@@ -101,10 +116,16 @@ static uint8_t read_fom_reg(uint8_t addr) {
   while (SPI_I2S_GetFlagStatus(SPI2, SPI_I2S_FLAG_BSY) == SET);
   uint8_t ret = SPI_I2S_ReceiveData(SPI2);
   AccUnselect();
+#endif
+
   return ret;
 }
 
 static void read_data(void) {
+
+#warning "Needs porting to libopencm3 or the real driver!"
+
+#if 0
   AccSelect();
 
   dma_tx_buf[0] = (1<<7|1<<6|ADXL345_REG_DATA_X0);
@@ -155,6 +176,7 @@ static void read_data(void) {
 
   /* Enable DMA1 Channel4 Transfer Complete interrupt */
   DMA_ITConfig(DMA1_Channel4, DMA_IT_TC, ENABLE);
+#endif
 
 }
 
@@ -162,7 +184,7 @@ static inline void main_periodic_task( void ) {
 
   RunOnceEvery(10,
     {
-      DOWNLINK_SEND_ALIVE(DefaultChannel, 16, MD5SUM);
+      DOWNLINK_SEND_ALIVE(DefaultChannel, DefaultDevice, 16, MD5SUM);
       LED_PERIODIC();
     });
 
@@ -180,7 +202,11 @@ static inline void main_periodic_task( void ) {
     /* Enable full res and interrupt active low */
     write_to_reg(ADXL345_REG_DATA_FORMAT, 1<<3|1<<5);
     /* reads data once to bring interrupt line up */
+<<<<<<< HEAD
     uint8_t __attribute__ ((unused)) ret = SPI_I2S_ReceiveData(SPI2);
+=======
+    uint8_t ret = spi_read(SPI2);
+>>>>>>> upstream/master
     read_data();
     acc_status = CONFIGURED;
   }
@@ -198,13 +224,16 @@ static inline void main_event_task( void ) {
     int32_t iax = ax;
     int32_t iay = ay;
     int32_t iaz = az;
-    RunOnceEvery(10, {DOWNLINK_SEND_IMU_ACCEL_RAW(DefaultChannel, &iax, &iay, &iaz);});
+    RunOnceEvery(10, {DOWNLINK_SEND_IMU_ACCEL_RAW(DefaultChannel, DefaultDevice, &iax, &iay, &iaz);});
   }
 
 }
 
 static inline void main_init_hw( void ) {
 
+#warning "Needs porting to libopencm3 or the real driver!"
+
+#if 0
   /* configure acc slave select */
   /* set acc slave select as output and assert it ( on PB12) */
   AccUnselect();
@@ -260,6 +289,7 @@ static inline void main_init_hw( void ) {
   /* Enable SPI_2 DMA clock ---------------------------------------------------*/
   RCC_AHBPeriphClockCmd(RCC_AHBPeriph_DMA1, ENABLE);
 
+<<<<<<< HEAD
   //DEBUG_SERVO2_INIT();
 
 }
@@ -280,17 +310,21 @@ static inline void enable_hw( void ) {
 	     .NVIC_IRQChannelCmd = ENABLE
 	   };
 	   NVIC_Init(&NVIC_init_struct);
+=======
+  DEBUG_SERVO2_INIT();
+#endif
+>>>>>>> upstream/master
 
 }
 
 
-void exti2_irq_handler(void) {
+void exti2_isr(void) {
 
   /* clear EXTI */
-  if(EXTI_GetITStatus(EXTI_Line2) != RESET)
-    EXTI_ClearITPendingBit(EXTI_Line2);
+  exti_reset_request(EXTI2);
 
   //DEBUG_S4_TOGGLE();
+<<<<<<< HEAD
 
   read_data();
 
@@ -303,12 +337,18 @@ void exti4_irq_handler(void) {
     EXTI_ClearITPendingBit(EXTI_Line2);
 
   //DEBUG_S4_TOGGLE();
+=======
+>>>>>>> upstream/master
 
   read_data();
 
 }
 
-void dma1_c4_irq_handler(void) {
+void dma1_channel4_isr(void) {
+
+#warning "Needs porting to libopencm3 or to the real driver!"
+
+#if 0
   AccUnselect();
 
   if (DMA_GetITStatus(DMA1_IT_TC4)) {
@@ -326,4 +366,10 @@ void dma1_c4_irq_handler(void) {
   /* Disable DMA1 Channel4 and 5 */
   DMA_Cmd(DMA1_Channel4, DISABLE);
   DMA_Cmd(DMA1_Channel5, DISABLE);
+<<<<<<< HEAD
+=======
+#endif
+
+  acc_data_available = TRUE;
+>>>>>>> upstream/master
 }

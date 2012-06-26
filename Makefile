@@ -46,6 +46,7 @@ MULTIMON=sw/ground_segment/multimon
 MISC=sw/ground_segment/misc
 LOGALIZER=sw/logalizer
 SIMULATOR=sw/simulator
+EXT=sw/ext
 MAKE=make PAPARAZZI_SRC=$(PAPARAZZI_SRC) PAPARAZZI_HOME=$(PAPARAZZI_HOME)
 CONF=$(PAPARAZZI_SRC)/conf
 STATICINCLUDE =$(PAPARAZZI_HOME)/var/include
@@ -82,7 +83,7 @@ endif
 
 all: conf commands static
 
-static : lib center tools cockpit multimon tmtc misc logalizer lpc21iap sim_static static_h usb_lib
+static: lib center tools cockpit multimon tmtc misc logalizer lpc21iap sim_static static_h usb_lib ext
 
 conf: conf/conf.xml conf/control_panel.xml conf/maps.xml FORCE
 
@@ -126,6 +127,9 @@ static_h: $(MESSAGES_H) $(MESSAGES2_H) $(UBX_PROTOCOL_H) $(MTK_PROTOCOL_H) $(XSE
 
 usb_lib:
 	@[ -d sw/airborne/arch/lpc21/lpcusb ] && ((test -x "$(ARMGCC)" && (cd sw/airborne/arch/lpc21/lpcusb; $(MAKE))) || echo "Not building usb_lib: ARMGCC=$(ARMGCC) not found") || echo "Not building usb_lib: sw/airborne/arch/lpc21/lpcusb directory missing"
+
+ext:
+	$(MAKE) -C$(EXT) all
 
 $(MESSAGES_H) : $(MESSAGES_XML) $(CONF_XML) tools
 	$(Q)test -d $(STATICINCLUDE) || mkdir -p $(STATICINCLUDE)
@@ -235,7 +239,8 @@ fast_deb:
 clean:
 	$(Q)rm -fr dox build-stamp configure-stamp conf/%gconf.xml debian/files debian/paparazzi-base debian/paparazzi-bin
 	$(Q)rm -f  $(MESSAGES_H) $(MESSAGES2_H) $(UBX_PROTOCOL_H) $(MTK_PROTOCOL_H) $(DL_PROTOCOL_H)
-	$(Q)find . -mindepth 2 -name Makefile -exec sh -c 'echo "Cleaning {}"; $(MAKE) -C `dirname {}` $@' \;
+	$(Q)find . -mindepth 2 -name Makefile -a ! -path "./sw/ext/*" -exec sh -c 'echo "Cleaning {}"; $(MAKE) -C `dirname {}` $@' \;
+	$(Q)make -C sw/ext clean
 	$(Q)find . -name '*~' -exec rm -f {} \;
 	$(Q)rm -f paparazzi sw/simulator/launchsitl
 
@@ -251,7 +256,6 @@ dist_clean :
 	@echo "Warning: This removes all non-repository files. This means you will loose your aircraft list, your maps, your logfiles, ... if you want this, then run: make dist_clean_irreversible"
 
 dist_clean_irreversible: clean
-	rm -rf conf/srtm_data
 	rm -rf conf/maps_data conf/maps.xml
 	rm -rf conf/conf.xml conf/controlpanel.xml
 	rm -rf var
@@ -259,14 +263,9 @@ dist_clean_irreversible: clean
 ab_clean:
 	find sw/airborne -name '*~' -exec rm -f {} \;
 
-test_all_example_airframes:
-	$(MAKE) AIRCRAFT=BOOZ2_A1 clean_ac ap sim
-	$(MAKE) AIRCRAFT=Microjet clean_ac ap sim
-	$(MAKE) AIRCRAFT=Tiny_IMU clean_ac ap
-	$(MAKE) AIRCRAFT=EasyStar_ETS clean_ac ap sim
-
-test_all_example_airframes2:
-	for ap in `grep name conf/conf.xml.example | sed -e 's/.*name=\"//' | sed -e 's/"//'`; do echo "Making $$ap"; make -C ./ AIRCRAFT=$$ap clean_ac ap.compile;   done
+replace_current_conf_xml:
+	test conf/conf.xml || mv conf/conf.xml conf/conf.xml.backup.`date +%Y%m%d-%H%M%s`
+	cp conf/conf.xml.example conf/conf.xml
 
 commands: paparazzi sw/simulator/launchsitl
 
@@ -278,8 +277,6 @@ sw/simulator/launchsitl:
 	cat src/$(@F) | sed s#OCAMLRUN#$(OCAMLRUN)# | sed s#OCAML#$(OCAML)# > $@
 	chmod a+x $@
 
-#.SUFFIXES: .hgt.zip
-
-%.hgt.zip:
-	cd data/srtm; $(MAKE) $(@)
+test: all replace_current_conf_xml
+	cd tests; $(MAKE) test
 

@@ -10,23 +10,22 @@
       <message name="ROTORCRAFT_STATUS"       period="1.2"/>
       <message name="ROTORCRAFT_FP"          period="0.25"/>
       <message name="ALIVE"             period="2.1"/>
-      <message name="INS_REF"     period="5.1"/>
+      <message name="INS_REF"     period="0.25"/>
       <message name="ROTORCRAFT_NAV_STATUS"  period="1.6"/>
-      <message name="WP_MOVED"          period="1.3"/>
+<!--      <message name="WP_MOVED"          period="1.3"/> -->
       <message name="GPS_INT"         period=".25"/>
       <message name="INS"          period=".25"/>
-      <message name="INS"          period=".25"/>	
       <message name="IMU_ACCEL_RAW"     period=".05"/>
       <message name="IMU_GYRO_RAW"      period=".25"/>
       <message name="IMU_MAG_RAW"       period=".25"/>
       <message name="BARO_RAW"          period=".1"/>
+	<message name="SONAR" 		period=".1"/>
     </mode>
 
     <mode name="ppm">
       <message name="BOOZ2_CMD"           period=".05"/>
       <message name="PPM"                 period="0.5"/>
       <message name="RC"                  period="0.5"/>
-      <message name="BOOZ2_RADIO_CONTROL" period="0.5"/>
       <message name="ROTORCRAFT_STATUS"       period="1"/>
     </mode>
 
@@ -68,7 +67,7 @@
 <!--      <message name="BOOZ2_ALIGNER"     period=".1"/> -->
       <message name="FILTER"      period=".5"/>
 <!--      <message name="BOOZ2_AHRS_QUAT"   period=".25"/> -->
-      <message name="BOOZ2_AHRS_EULER"  period=".1"/>
+      <message name="AHRS_EULER_INT"  period=".1"/> 
 <!--      <message name="BOOZ2_AHRS_RMAT"   period=".5"/> -->
     </mode>
 
@@ -96,6 +95,9 @@
 <!--      <message name="BOOZ2_CMD"               period=".05"/> -->
       <message name="INS"               period=".05"/>
       <message name="INS_REF"           period="5.1"/>
+      <message name="INS_Z"          period=".1"/>
+      <message name="ROTORCRAFT_FP"          period="0.05"/>
+<!--      <message name="SONAR"          period=".1"/>  -->
     </mode>
 
     <mode name="h_loop">

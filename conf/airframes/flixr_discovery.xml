@@ -1,10 +1,8 @@
 <!DOCTYPE airframe SYSTEM "airframe.dtd">
 <!-- ST Model Discovery (http://www.sheng-teng.com/)
-     TWOG1  (http://paparazzi.enac.fr/wiki/index.php/)
+     TWOG1  (http://paparazzi.enac.fr/wiki/TWOG/v1.0)
      * uBlox LEA5H and Sarantel helix GPS antenna
 
-READ this first
-http://paparazzi.enac.fr/w/index.php?title=Theory_of_Operation
 -->
 
 <airframe name="Discovery">
@@ -14,11 +12,13 @@ http://paparazzi.enac.fr/w/index.php?title=Theory_of_Operation
       <configure name="PERIODIC_FREQUENCY" value="960"/> <!-- IMU FREQ -->
       <configure name="AHRS_PROPAGATE_FREQUENCY" value="120"/>
       <configure name="AHRS_CORRECT_FREQUENCY" value="60"/>
-      <configure name="AHRS_ALIGNER_LED" value="1"/>
-      <configure name="CPU_LED" value="2"/>
-      <!--define name="IMU_B2_VERSION_1_0"/-->
+      <configure name="AHRS_ALIGNER_LED" value="2"/>
+      <configure name="SYS_TIME_LED" value="1"/>
+      <configure name="GPS_LED" value="none"/>
+      <!-- for airspeed sensor
       <define name="USE_I2C0"/>
       <define name="I2C0_VIC_SLOT" value="12"/>
+      -->
     </target>
     <target name="sim"          board="pc"/>
 
@@ -37,10 +37,16 @@ http://paparazzi.enac.fr/w/index.php?title=Theory_of_Operation
     <!-- Control -->
     <subsystem name="control" type="new"/>
     <subsystem name="navigation" type="extra"/>
-    <subsystem name="ahrs" type="float_dcm"/>
+
+    <subsystem name="ahrs" type="int_cmpl_quat">
+      <configure name="USE_MAGNETOMETER" value="0"/>
+      <define name="AHRS_USE_GPS_HEADING" value="1"/>
+    </subsystem>
 
     <!-- Sensors -->
-    <subsystem name="imu" type="booz"/>
+    <subsystem name="imu" type="b2_v1.0">
+      <configure name="NO_MAG" value="1"/>
+    </subsystem>
     <subsystem name="gps" type="ublox"/>
     <subsystem name="current_sensor">
       <configure name="ADC_CURRENT_SENSOR" value="ADC_3"/>
@@ -51,7 +57,6 @@ http://paparazzi.enac.fr/w/index.php?title=Theory_of_Operation
   <firmware name="setup">
     <target name="tunnel"          board="twog_1.0" />
     <target name="usb_tunnel_0"    board="twog_1.0" />
-    <target name="setup_actuators" board="twog_1.0" />
   </firmware>
 
 
@@ -66,18 +71,18 @@ http://paparazzi.enac.fr/w/index.php?title=Theory_of_Operation
     <load name="adc_generic.xml">
       <configure name="ADC_CHANNEL_GENERIC1" value="ADC_4"/> <!-- voltage sensor -->
     </load>
-    <load name="airspeed_ets.xml">
+    <!--load name="airspeed_ets.xml">
       <define name="SENSOR_SYNC_SEND"/>
-      <!--define name="USE_AIRSPEED"/-->
-    </load>
+      <define name="USE_AIRSPEED"/>
+    </load-->
   </modules>
 
 <!-- Define here to which CONNECTOR NUMBER the servo is connected to, on the autopilot cicuit board -->
   <servos>
     <servo name="MOTOR"         no="0" min="1100" neutral="1100" max="1900"/>
     <servo name="ELEVATOR"      no="2" min="1100" neutral="1500" max="1900"/>
-    <servo name="AILERON_RIGHT" no="3" min="2000" neutral="1500" max="1000"/>
-    <servo name="AILERON_LEFT"  no="4" min="2000" neutral="1500" max="1000"/>
+    <servo name="AILERON_RIGHT" no="3" min="1000" neutral="1500" max="1000"/>
+    <servo name="AILERON_LEFT"  no="4" min="1000" neutral="1500" max="2000"/>
     <servo name="RUDDER"        no="6" min="1000" neutral="1500" max="2000"/>
     <servo name="HATCH"     no="7" min="1100" neutral="1100" max="1900"/>
   </servos>
@@ -116,8 +121,8 @@ http://paparazzi.enac.fr/w/index.php?title=Theory_of_Operation
     <set servo="RUDDER" value="@YAW + @ROLL*COMBI_SWITCH"/>
 
     <let var="roll" value="@ROLL"/>
-    <set servo="AILERON_LEFT" value="($roll > 0 ? AILERON_DIFF : 1) * $roll"/>
-    <set servo="AILERON_RIGHT" value="($roll > 0 ? 1 : AILERON_DIFF) * $roll"/>
+    <set servo="AILERON_LEFT" value="($roll > 0 ? 1: AILERON_DIFF) * $roll"/>
+    <set servo="AILERON_RIGHT" value="($roll > 0 ? AILERON_DIFF : 1) * $roll"/>
     <!--set servo="HATCH"         value="@HATCH"/-->
   </command_laws>
 
@@ -162,30 +167,27 @@ http://paparazzi.enac.fr/w/index.php?title=Theory_of_Operation
     <define name="GYRO_R_P" value="0."/>
     <define name="GYRO_R_Q" value="0."/>
 
-    <define name="MAG_X_NEUTRAL" value="0"/>
-    <define name="MAG_Y_NEUTRAL" value="0"/>
-    <define name="MAG_Z_NEUTRAL" value="0"/>
+    <define name="BODY_TO_IMU_PHI" value="0" unit="deg"/>
+    <define name="BODY_TO_IMU_THETA" value="0" unit="deg"/>
+    <define name="BODY_TO_IMU_PSI" value="0" unit="deg"/>
+  </section>
 
-    <define name="MAG_X_SENS" value="1" integer="16"/>
-    <define name="MAG_Y_SENS" value="1" integer="16"/>
-    <define name="MAG_Z_SENS" value="1" integer="16"/>
-
-    <!-- <define name="MAG_45_HACK" value="1"/> -->
-
-    <define name="BODY_TO_IMU_PHI" value="0"/>
-    <define name="BODY_TO_IMU_THETA" value="0"/>
-    <define name="BODY_TO_IMU_PSI" value="0"/>
+  <!-- Munich -->
+  <section name="AHRS" prefix="AHRS_">
+    <define name="H_X" value="0.4357869"/>
+    <define name="H_Y" value="0.0177010"/>
+    <define name="H_Z" value="0.8998758"/>
   </section>
 
   <section name="INS" prefix="INS_">
-    <define name="ROLL_NEUTRAL_DEFAULT" value="0."/>
-    <define name="PITCH_NEUTRAL_DEFAULT" value="0."/>
+    <define name="ROLL_NEUTRAL_DEFAULT" value="0." unit="deg"/>
+    <define name="PITCH_NEUTRAL_DEFAULT" value="0." unit="deg"/>
   </section>
 
 
   <section name="AUTO1" prefix="AUTO1_">
-    <define name="MAX_ROLL" value="RadOfDeg(55)"/>
-    <define name="MAX_PITCH" value="RadOfDeg(35)"/>
+    <define name="MAX_ROLL" value="55" unit="deg"/>
+    <define name="MAX_PITCH" value="35" unit="deg"/>
   </section>
 
 
@@ -211,7 +213,7 @@ http://paparazzi.enac.fr/w/index.php?title=Theory_of_Operation
     <define name="MAXIMUM_AIRSPEED" value="22.0" unit="m/s"/>
     <define name="CARROT" value="5.0" unit="s"/>
     <define name="KILL_MODE_DISTANCE" value="(1.5*MAX_DIST_FROM_HOME)"/>
-    <define name="CONTROL_RATE" value="60" unit="Hz"/>
+    <define name="CONTROL_FREQUENCY" value="60" unit="Hz"/>
 
     <!--UNLOCKED_HOME_MODE if set to TRUE means that HOME mode does not get stuck.
     If not set before when you would enter home mode you had to flip a bit via the GCS to get out. -->
@@ -230,9 +232,6 @@ http://paparazzi.enac.fr/w/index.php?title=Theory_of_Operation
 
     <!-- The Glide definitions are used for calculating the touch down point during auto landing -->
     <!--
-    <define name="GLIDE_AIRSPEED" value="10."/>
-    <define name="GLIDE_VSPEED" value="3."/>
-    <define name="GLIDE_PITCH" value="10." unit="deg"/>
     -->
   </section>
 
@@ -242,7 +241,7 @@ http://paparazzi.enac.fr/w/index.php?title=Theory_of_Operation
     <define name="POWER_CTL_BAT_NOMINAL" value="11.2" unit="volt"/>
 
     <!-- outer loop proportional gain -->
-    <define name="ALTITUDE_PGAIN" value="-0.04" unit="(m/s)/m"/>
+    <define name="ALTITUDE_PGAIN" value="0.04" unit="(m/s)/m"/>
 
     <!-- outer loop saturation -->
     <define name="ALTITUDE_MAX_CLIMB" value="2." unit="m/s"/>
@@ -257,18 +256,18 @@ http://paparazzi.enac.fr/w/index.php?title=Theory_of_Operation
 
     <!-- Climb loop (throttle) -->
     <define name="AUTO_THROTTLE_CLIMB_THROTTLE_INCREMENT" value="0.05" unit="%/(m/s)"/>
-    <define name="AUTO_THROTTLE_PGAIN" value="-0.007" unit="%/(m/s)"/>
-    <define name="AUTO_THROTTLE_IGAIN" value="-0.001"/>
-    <define name="AUTO_THROTTLE_DGAIN" value="-0.0"/>
+    <define name="AUTO_THROTTLE_PGAIN" value="0.007" unit="%/(m/s)"/>
+    <define name="AUTO_THROTTLE_IGAIN" value="0.001"/>
+    <define name="AUTO_THROTTLE_DGAIN" value="0.0"/>
 
     <!-- Climb loop (pitch) -->
     <define name="AUTO_THROTTLE_PITCH_OF_VZ_PGAIN" value="0.20" unit="rad/(m/s)"/>
-    <!--define name="AUTO_PITCH_PGAIN" value="-0.0"/>
-    <define name="AUTO_PITCH_DGAIN" value="-0.0"/>
-    <define name="AUTO_PITCH_IGAIN" value="-0.0"/-->
-    <define name="AUTO_PITCH_PGAIN" value="-0.052"/>
-    <define name="AUTO_PITCH_DGAIN" value="-0.0"/>
-    <define name="AUTO_PITCH_IGAIN" value="-0.065"/>
+    <!--define name="AUTO_PITCH_PGAIN" value="0.0"/>
+    <define name="AUTO_PITCH_DGAIN" value="0.0"/>
+    <define name="AUTO_PITCH_IGAIN" value="0.0"/-->
+    <define name="AUTO_PITCH_PGAIN" value="0.052"/>
+    <define name="AUTO_PITCH_DGAIN" value="0.0"/>
+    <define name="AUTO_PITCH_IGAIN" value="0.065"/>
 
 
     <!-- airspeed control -->
@@ -298,7 +297,7 @@ http://paparazzi.enac.fr/w/index.php?title=Theory_of_Operation
 <!-- ******************* HORIZONTAL CONTROL ******************************** -->
   <section name="HORIZONTAL CONTROL" prefix="H_CTL_">
 
-    <define name="COURSE_PGAIN" value="-1.1"/>
+    <define name="COURSE_PGAIN" value="1.1"/>
     <!-- <define name="COURSE_IGAIN" value="0.01"/> -->
     <!-- <define name="COURSE_DGAIN" value="0.02"/> -->
     <!-- <define name="COURSE_PRE_BANK_CORRECTION" value="0.5"/> -->
@@ -306,16 +305,16 @@ http://paparazzi.enac.fr/w/index.php?title=Theory_of_Operation
     <!-- maybe handy to avoid over corner with lots of wind and small airframe -->
     <!-- <define name="COURSE_SLEW_INCREMENT" value="RadOfDeg(4)"/> -->
 
-    <define name="ROLL_MAX_SETPOINT" value="RadOfDeg(50)" unit="radians"/>
-    <define name="PITCH_MAX_SETPOINT" value="RadOfDeg(35)" unit="radians"/>
-    <define name="PITCH_MIN_SETPOINT" value="RadOfDeg(-30)" unit="radians"/>
+    <define name="ROLL_MAX_SETPOINT" value="50" unit="deg"/>
+    <define name="PITCH_MAX_SETPOINT" value="35" unit="deg"/>
+    <define name="PITCH_MIN_SETPOINT" value="-30" unit="deg"/>
 
 
-    <define name="ROLL_ATTITUDE_GAIN" value="-7500."/>
-    <define name="ROLL_RATE_GAIN" value="-1500"/>
+    <define name="ROLL_ATTITUDE_GAIN" value="7500."/>
+    <define name="ROLL_RATE_GAIN" value="1500"/>
 
     <!-- only for stabilization adaptive -->
-    <define name="ROLL_IGAIN" value="-500"/>
+    <define name="ROLL_IGAIN" value="500"/>
     <define name="ROLL_KFFA" value="0."/>
     <define name="ROLL_KFFD" value="0."/>
 
@@ -323,11 +322,11 @@ http://paparazzi.enac.fr/w/index.php?title=Theory_of_Operation
     <!--define name="ROLL_SLEW" value="0.6"/--> <!-- was 0.05 -->
 
 
-    <define name="PITCH_PGAIN" value="-7000."/>
+    <define name="PITCH_PGAIN" value="7000."/>
 
     <!-- only for stabilization adaptive -->
-    <define name="PITCH_DGAIN" value="-1000."/>
-    <define name="PITCH_IGAIN" value="-500."/>
+    <define name="PITCH_DGAIN" value="1000."/>
+    <define name="PITCH_IGAIN" value="500."/>
     <define name="PITCH_KFFA" value="0."/>
     <define name="PITCH_KFFD" value="0."/>
 
@@ -339,7 +338,6 @@ http://paparazzi.enac.fr/w/index.php?title=Theory_of_Operation
 
 <!-- ******************************** NAV ********************************** -->
   <section name="NAV">
-    <define name="NAV_PITCH" value="0."/>
     <define name="NAV_GLIDE_PITCH_TRIM" value="0"/>
   </section>
 

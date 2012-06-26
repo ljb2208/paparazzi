@@ -21,14 +21,14 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#include "sys_time.h"
+#include "mcu_periph/sys_time.h"
 #include "subsystems/radio_control.h"
 #include "subsystems/radio_control/ppm.h"
 
 #include <inttypes.h>
 #include <caml/mlvalues.h>
 
-#ifdef USE_NPS
+#if USE_NPS
 #include "nps_radio_control.h"
 #endif
 
@@ -55,7 +55,7 @@ value send_ppm(value unit) {
   return unit;
 }
 
-#ifdef USE_NPS
+#if USE_NPS
 #define PPM_OF_NPS(_nps, _neutral, _min, _max)                          \
   ((_nps) >= 0 ? (_neutral) + (_nps) * ((_max)-(_neutral)) : (_neutral) + (_nps) * ((_neutral)- (_min)))
 
@@ -94,7 +94,7 @@ value send_ppm(value unit) {
   return unit;
 }
 
-#ifdef USE_NPS
+#if USE_NPS
 void radio_control_feed(void) {}
 #endif
 

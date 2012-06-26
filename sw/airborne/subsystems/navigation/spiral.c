@@ -90,12 +90,8 @@ bool_t SpiralNav(void)
   TransCurrentY = estimator_y - WaypointY(Center);
   DistanceFromCenter = sqrt(TransCurrentX*TransCurrentX+TransCurrentY*TransCurrentY);
 
-  bool_t InCircle = TRUE;
   float DistanceStartEstim;
   float CircleAlpha;
-
-  if(DistanceFromCenter > Spiralradius)
-	InCircle = FALSE;
 
   switch(CSpiralStatus)
 	{
@@ -166,7 +162,8 @@ bool_t SpiralNav(void)
 	  }
 	  CSpiralStatus = Circle;
 	  break;
-
+       default:
+         break;
 	}
   return TRUE;
 }

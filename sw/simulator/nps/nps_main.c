@@ -13,12 +13,14 @@
 #include "nps_ivy.h"
 #include "nps_flightgear.h"
 
-#define SIM_DT     (1./512.)
+#include "mcu_periph/sys_time.h"
+#define SIM_DT     (SYS_TIME_RESOLUTION)
 #define DISPLAY_DT (1./30.)
 #define HOST_TIMEOUT_MS 40
 #define HOST_TIME_FACTOR 1.
 
 static struct {
+  double real_initial_time;
   double scaled_initial_time;
   double host_time_factor;
   double sim_time;
@@ -54,7 +56,7 @@ void cont_hdl (int n __attribute__ ((unused))) {
    printf("Press <enter> to continue.\n");
  }
 
-double time_to_double(timeval *t) {
+double time_to_double(struct timeval *t) {
     return ((double)t->tv_sec + (double)(t->tv_usec * 1e-6));
 }
 
@@ -80,8 +82,9 @@ static void nps_main_init(void) {
 
   nps_main.sim_time = 0.;
   nps_main.display_time = 0.;
-  timeval t;
+  struct timeval t;
   gettimeofday (&t, NULL);
+  nps_main.real_initial_time = time_to_double(&t);
   nps_main.scaled_initial_time = time_to_double(&t);
   nps_main.host_time_factor = HOST_TIME_FACTOR;
 
@@ -107,12 +110,18 @@ static void nps_main_init(void) {
   if (nps_main.fg_host)
     nps_flightgear_init(nps_main.fg_host, nps_main.fg_port);
 
+#if DEBUG_NPS_TIME
+  printf("host_time_factor,host_time_elapsed,host_time_now,scaled_initial_time,sim_time_before,display_time_before,sim_time_after,display_time_after\n");
+#endif
+
 }
 
 
 
 static void nps_main_run_sim_step(void) {
   //  printf("sim at %f\n", nps_main.sim_time);
+
+  nps_autopilot_run_systime_step();
 
   nps_fdm_run_step(autopilot.commands);
 
@@ -158,6 +167,7 @@ static gboolean nps_main_periodic(gpointer data __attribute__ ((unused))) {
     t2 = time_to_double(&tv_now);
     /* add the pause to initial real time */
     irt += t2 - t1;
+    nps_main.real_initial_time += t2 - t1;
     /* convert to scaled initial real time */
     nps_main.scaled_initial_time = t2 - (t2 - irt)/nps_main.host_time_factor;
     pauseSignal = 0;
@@ -167,14 +177,36 @@ static gboolean nps_main_periodic(gpointer data __attribute__ ((unused))) {
   host_time_now = time_to_double(&tv_now);
   double host_time_elapsed = nps_main.host_time_factor *(host_time_now  - nps_main.scaled_initial_time);
 
+#if DEBUG_NPS_TIME
+  printf("%f,%f,%f,%f,%f,%f,",nps_main.host_time_factor,host_time_elapsed,host_time_now,nps_main.scaled_initial_time,nps_main.sim_time,nps_main.display_time);
+#endif
+
+  int cnt = 0;
+  static int prev_cnt = 0;
+  static int grow_cnt = 0;
   while (nps_main.sim_time <= host_time_elapsed) {
     nps_main_run_sim_step();
     nps_main.sim_time += SIM_DT;
-    if (nps_main.display_time < nps_main.sim_time) {
+    if (nps_main.display_time < (host_time_now - nps_main.real_initial_time)) {
       nps_main_display();
       nps_main.display_time += DISPLAY_DT;
     }
+    cnt++;
   }
+
+  /* Check to make sure the simulation doesn't get too far behind real time looping */
+  if (cnt > (prev_cnt)) {grow_cnt++;}
+  else { grow_cnt--;}
+  if (grow_cnt < 0) {grow_cnt = 0;}
+  prev_cnt = cnt;
+
+  if (grow_cnt > 10) {
+    printf("Warning: The time factor is too large for efficient operation! Please reduce the time factor.\n");
+  }
+
+#if DEBUG_NPS_TIME
+  printf("%f,%f\n",nps_main.sim_time,nps_main.display_time);
+#endif
 
   return TRUE;
 
@@ -192,11 +224,12 @@ static bool_t nps_main_parse_options(int argc, char** argv) {
   static const char* usage =
 "Usage: %s [options]\n"
 " Options :\n"
-"   --fg_host flight gear host\n"
-"   --fg_port flight gear port\n"
-"   -j --js_dev joystick device\n"
-"   --spektrum_dev spektrum device\n"
-"   --rc_script no\n";
+"   -h                                     Display this help\n"
+"   --fg_host <flight gear host>           e.g. 127.0.0.1\n"
+"   --fg_port <flight gear port>           e.g. 5501\n"
+"   -j --js_dev <joystick device or index> e.g. /dev/input/js0 or 0\n"
+"   --spektrum_dev <spektrum device>       e.g. /dev/ttyUSB0\n"
+"   --rc_script <number>                   e.g. 0\n";
 
 
   while (1) {
@@ -210,7 +243,7 @@ static bool_t nps_main_parse_options(int argc, char** argv) {
       {0, 0, 0, 0}
     };
     int option_index = 0;
-    int c = getopt_long(argc, argv, "j:",
+    int c = getopt_long(argc, argv, "j:h",
                         long_options, &option_index);
     if (c == -1)
       break;
@@ -234,6 +267,10 @@ static bool_t nps_main_parse_options(int argc, char** argv) {
     case 'j':
       nps_main.js_dev = strdup(optarg);
       break;
+
+    case 'h':
+      fprintf(stderr, usage, argv[0]);
+      exit(0);
 
     default: /* ’?’ */
       printf("?? getopt returned character code 0%o ??\n", c);

@@ -137,9 +137,9 @@
 #define IMU_ACCEL_Z_SIGN  1
 #endif
 #if !defined IMU_MAG_X_SIGN & !defined IMU_MAG_Y_SIGN & !defined IMU_MAG_Z_SIGN
-#define IMU_MAG_X_SIGN    1
+#define IMU_MAG_X_SIGN   -1
 #define IMU_MAG_Y_SIGN   -1
-#define IMU_MAG_Z_SIGN   -1
+#define IMU_MAG_Z_SIGN    1
 #endif
 #endif /* IMU_B2_VERSION_1_2 */
 
@@ -169,7 +169,7 @@
     }									\
   }
 #elif defined IMU_B2_MAG_TYPE && IMU_B2_MAG_TYPE == IMU_B2_MAG_HMC5843
-include "peripherals/hmc5843.h"
+#include "peripherals/hmc5843.h"
 #define foo_handler() {}
 #define ImuMagEvent(_mag_handler) {					\
     MagEvent(foo_handler);                          \
@@ -196,6 +196,7 @@ include "peripherals/hmc5843.h"
   }
 #else
 #define ImuMagEvent(_mag_handler) {}
+#define ImuScaleMag(_imu) {}
 #endif
 
 

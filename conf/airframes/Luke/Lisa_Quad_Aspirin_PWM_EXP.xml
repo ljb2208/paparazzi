@@ -1,6 +1,20 @@
 <!-- this is a frame equiped with  Lisa/L#3 and Mikrokopter Controllers controllers -->
+<airframe name="Luke_Quad_Pwm_Exp">
 
-<airframe name="Luke_Quad">
+ <modules main_freq="512">
+    <load name="sonar_maxbotix_booz.xml">
+	<define name="USE_AD1_1" />
+      <configure name="ADC_SONAR" value="0"/>
+    </load>
+  </modules>
+
+<!-- <modules main_freq="512">
+    <load name="adc_generic.xml">
+	<define name="USE_AD1_1" />
+	<configure name="ADC_CHANNEL_GENERIC1" value="1" />
+    </load>
+  </modules> -->
+
 
   <servos min="0" neutral="0" max="0xff">
     <servo name="FRONT"   no="0" min="1000" neutral="1000" max="2000"/>
@@ -32,8 +46,9 @@
 
 
   <section name="SUPERVISION" prefix="SUPERVISION_">
-    <define name="MIN_MOTOR" value="1150"/>
-    <define name="MAX_MOTOR" value="2000"/>
+    <define name="STOP_MOTOR" value="990"/>
+    <define name="MIN_MOTOR" value="1030.0"/>
+    <define name="MAX_MOTOR" value="2050.0"/>
     <define name="TRIM_A" value="0"/>
     <define name="TRIM_E" value="0"/>
     <define name="TRIM_R" value="0"/>
@@ -76,37 +91,53 @@
     <define name="ACCEL_XZ_SENS" value="0.0" integer="16"/>
     <define name="ACCEL_YZ_SENS" value="0.0" integer="16"/>
 
+<!--
     <define name="MAG_X_NEUTRAL" value="-78"/>
     <define name="MAG_Y_NEUTRAL" value="27"/>
     <define name="MAG_Z_NEUTRAL" value="-96"/>
     <define name="MAG_X_SENS" value="4.05974525723" integer="16"/>
     <define name="MAG_Y_SENS" value="4.20848254405" integer="16"/>
     <define name="MAG_Z_SENS" value="4.00874100997" integer="16"/> 
+-->
 
 
-<!--
+<!-- Values as computed 23 Jan 2011 -->
+<define name="MAG_X_NEUTRAL" value="-110"/>
+<define name="MAG_Y_NEUTRAL" value="-76"/>
+<define name="MAG_Z_NEUTRAL" value="23"/>
+<define name="MAG_X_SENS" value="5.1403353094" integer="16"/>
+<define name="MAG_Y_SENS" value="5.16871020726" integer="16"/>
+<define name="MAG_Z_SENS" value="5.25359166691" integer="16"/>
+
+<!--  Previous Values
+
 	<define name="MAG_X_NEUTRAL" value="-69"/>
 	<define name="MAG_Y_NEUTRAL" value="5"/>
 	<define name="MAG_Z_NEUTRAL" value="-91"/>
 	<define name="MAG_X_SENS" value="5.15153264373" integer="16"/>
 	<define name="MAG_Y_SENS" value="5.41811602477" integer="16"/>
 	<define name="MAG_Z_SENS" value="5.18094612948" integer="16"/>
+
 -->
 
     <define name="MAG_XY_SENS" value="0.0" integer="16"/>
     <define name="MAG_XZ_SENS" value="0.0" integer="16"/>
     <define name="MAG_YZ_SENS" value="0.0" integer="16"/>
 
-    <define name="BODY_TO_IMU_PHI"   value="RadOfDeg(   0. )"/>
-    <define name="BODY_TO_IMU_THETA" value="RadOfDeg(   0. )"/>
+<!--    <define name="BODY_TO_IMU_PHI"   value="RadOfDeg(   0.5 )"/>
+    <define name="BODY_TO_IMU_THETA" value="RadOfDeg(   -1.8 )"/> -->
+    <define name="BODY_TO_IMU_PHI"   value="RadOfDeg(   1.2 )"/>
+    <define name="BODY_TO_IMU_THETA" value="RadOfDeg(   -0.8 )"/>
     <define name="BODY_TO_IMU_PSI"   value="RadOfDeg(   0. )"/>
 
   </section>
 
  <section name="AUTOPILOT">
    <define name="MODE_MANUAL" value="AP_MODE_RATE_DIRECT"/>
-   <define name="MODE_AUTO1"  value="AP_MODE_ATTITUDE_DIRECT"/>
-   <define name="MODE_AUTO2"  value="AP_MODE_ATTITUDE_Z_HOLD"/>
+   <define name="MODE_AUTO1"  value="AP_MODE_RATE_Z_HOLD"/>
+<!--   <define name="MODE_AUTO2"  value="AP_MODE_ATTITUDE_DIRECT"/> -->
+   <define name="MODE_AUTO2"  value="AP_MODE_HOVER_Z_HOLD"/>
+
  </section>
 
  <section name="BAT">
@@ -120,13 +151,13 @@
     <define name="SP_MAX_Q" value="10000"/>
     <define name="SP_MAX_R" value="10000"/>
 
-    <define name="GAIN_P" value="-625"/>
-    <define name="GAIN_Q" value="-625"/>
-    <define name="GAIN_R" value="-800"/>
+    <define name="GAIN_P" value="1000"/>
+    <define name="GAIN_Q" value="1000"/>
+    <define name="GAIN_R" value="1000"/>
 
-    <define name="IGAIN_P" value="0"/>
-    <define name="IGAIN_Q" value="0"/>
-    <define name="IGAIN_R" value="0"/>
+    <define name="IGAIN_P" value="100"/>
+    <define name="IGAIN_Q" value="100"/>
+    <define name="IGAIN_R" value="100"/>
 
   </section>
 
@@ -155,53 +186,58 @@
     <define name="REF_MAX_RDOT" value="RadOfDeg(1800.)"/>
 
     <!-- feedback -->
-    <define name="PHI_PGAIN"  value="-1800"/>
-    <define name="PHI_DGAIN"  value="-350"/>
-    <define name="PHI_IGAIN"  value="-200"/>
+    <define name="PHI_PGAIN"  value="1600"/>
+    <define name="PHI_DGAIN"  value="330"/>
+    <define name="PHI_IGAIN"  value="150"/>
 
-    <define name="THETA_PGAIN"  value="-1800"/>
-    <define name="THETA_DGAIN"  value="-350"/>
-    <define name="THETA_IGAIN"  value="-200"/>
+    <define name="THETA_PGAIN"  value="1750"/>
+    <define name="THETA_DGAIN"  value="220"/>
+    <define name="THETA_IGAIN"  value="100"/>
 
-    <define name="PSI_PGAIN"  value="-2000"/>
-    <define name="PSI_DGAIN"  value="-400"/>
-    <define name="PSI_IGAIN"  value="-50"/>
+    <define name="PSI_PGAIN"  value="850"/>
+    <define name="PSI_DGAIN"  value="180"/>
+    <define name="PSI_IGAIN"  value="25"/>
 
     <!-- feedforward -->
-    <define name="PHI_DDGAIN"   value=" 300"/>
-    <define name="THETA_DDGAIN" value=" 300"/>
-    <define name="PSI_DDGAIN"   value=" 300"/>
+    <define name="PHI_DDGAIN"   value="130"/>
+    <define name="THETA_DDGAIN" value="130"/>
+    <define name="PSI_DDGAIN"   value="130"/>
 
   </section>
 
   <section name="AHRS" prefix="AHRS_">
     <define name="PROPAGATE_FREQUENCY" value="512"/>
-    <define name="H_X" value=" 0.9650205"/>
-    <define name="H_Y" value=" 0.0036869"/>
-    <define name="H_Z" value=" -0.2621484"/>
+<!-- for singapore 23 Jan 2012 -->
+    <define name="H_X" value=" 0.9651270"/>
+    <define name="H_Y" value=" 0.0036323"/>
+    <define name="H_Z" value=" -0.26217570"/>
   </section>
 
 
   <section name="INS" prefix="INS_">
-    <define name="BARO_SENS" value="10." integer="16"/>
-    <define name="UNTILT_ACCEL" value="1"/>
+    <define name="BARO_SENS" value="3.3" integer="16"/>
+<!--    <define name="UNTILT_ACCEL" value="1"/> -->
+    <define name="SONAR_SENS_NUM" value="-1"/>
+    <define name="SONAR_SENS_DEN" value="1" /> 
+    <define name="SONAR_CORRECT_ANGLE" value="1" />
   </section>
 
  <section name="GUIDANCE_V" prefix="GUIDANCE_V_">
-   <define name="MIN_ERR_Z"   value="POS_BFP_OF_REAL(-10.)"/>
-   <define name="MAX_ERR_Z"   value="POS_BFP_OF_REAL( 10.)"/>
-   <define name="MIN_ERR_ZD"  value="SPEED_BFP_OF_REAL(-10.)"/>
-   <define name="MAX_ERR_ZD"  value="SPEED_BFP_OF_REAL( 10.)"/>
+   <define name="MIN_ERR_Z"   value="POS_BFP_OF_REAL(-100.)"/>
+   <define name="MAX_ERR_Z"   value="POS_BFP_OF_REAL( 100.)"/>
+   <define name="MIN_ERR_ZD"  value="SPEED_BFP_OF_REAL(-100.)"/>
+   <define name="MAX_ERR_ZD"  value="SPEED_BFP_OF_REAL( 100.)"/>
    <define name="MAX_SUM_ERR" value="2000000"/>
+   <define name="NOMINAL_HOVER_THROTTLE" value="0.48" /> <!-- 4565 works -->
 
 <!--
    <define name="HOVER_KP"    value="-500"/>
    <define name="HOVER_KD"    value="-200"/>
    <define name="HOVER_KI"    value="0"/>
 -->
-   <define name="HOVER_KP"     value="-150"/>
-   <define name="HOVER_KD"     value="-80"/>
-   <define name="HOVER_KI"     value="0"/>
+   <define name="HOVER_KP"     value="60"/>
+   <define name="HOVER_KD"     value="40"/>
+   <define name="HOVER_KI"     value="40"/>
 
    <!-- 1.5m/s for full stick : BOOZ_SPEED_I_OF_F(1.5) / (MAX_PPRZ/2) -->
    <define name="RC_CLIMB_COEF" value ="163"/>
@@ -212,10 +248,10 @@
 
 
  <section name="GUIDANCE_H" prefix="GUIDANCE_H_">
-   <define name="PGAIN" value="-50"/>
-   <define name="DGAIN" value="-100"/>
-   <define name="IGAIN" value="-15"/>
-   <define name="NGAIN" value="-0"/>
+   <define name="PGAIN" value="50"/>
+   <define name="DGAIN" value="15"/>
+   <define name="IGAIN" value="15"/>
+   <define name="NGAIN" value="0"/>
  </section>
 
  <section name="MISC">
@@ -226,12 +262,9 @@
    <define name="ACTUATOR_NAMES"  value="{&quot;front_motor&quot;, &quot;back_motor&quot;, &quot;right_motor&quot;, &quot;left_motor&quot;}"/>
    <define name="INITIAL_CONDITITONS" value="&quot;reset00&quot;"/>
    <define name="SENSORS_PARAMS" value="&quot;nps_sensors_params_booz2_a1.h&quot;"/>
+	<define name="JS_THROTTLE" value="2" />
+	<define name="JS_YAW" value="3" />
  </section>
-
-
- <modules>
-   <load name="alt_srf08.xml"/>
- </modules>
 
   <firmware name="rotorcraft">
      <define name="USE_PERSISTENT_SETTINGS"/>
@@ -239,20 +272,21 @@
      <define name="USE_ADAPT_HOVER"/>
 <!--     <define name="FAILSAFE_GROUND_DETECT"/> -->
      <define name="USE_GPS_ACC4R"/>
+    <define name="USE_VFF" />
+    <define name="USE_HFF" />
+    <define name="BARO_LOW_GAIN" />
      <target name="ap" board="lisa_l_1.1">
       <subsystem name="radio_control" type="spektrum" />
       <subsystem name="actuators"     type="pwm_supervision"/>
-      <subsystem name="imu"           type="aspirin"/>	
+      <subsystem name="imu"           type="aspirin_v1.5"/>	
 	<define name="SERVO_HZ" value="400"/>
 	<define name="RADIO_CONTROL_NB_CHANNEL" value="9" />
 	<define name="RADIO_MODE" value="RADIO_AUX2" />
 	<define name="RADIO_KILL_SWITCH" value="RADIO_GEAR" /> 
 	<define name="BOOZ_START_DELAY" value="3"/> 
-<!--	<define name="RADIO_CONTROL_SPEKTRUM_SIGNS" value="\{-1,1,1,1,1,1,1,1,1\}" /> -->
-	<define name="RADIO_CONTROL_SPEKTRUM_SIGNS" value="\{1,1,-1,1,1,1,1,1,1\}" />
+	<define name="RADIO_CONTROL_SPEKTRUM_SIGNS" value="\{1,-1,-1,-1,1,1,1,1,1\}" />
 	<define name = "RADIO_CONTROL_SPEKTRUM_SECONDARY_PORT" value = "UART5"/>
 	<define name = "OVERRIDE_UART5_IRQ_HANDLER"/>
-<!--	<define name="RC_SPK_SYNC_2" value="0x12" /> -->
     </target>
     <target name="sim" board="pc">
       <subsystem name="fdm"           type="nps"/>
@@ -265,15 +299,12 @@
     <subsystem name="telemetry"     type="transparent"/>
 
     <subsystem name="gps"           type="ublox" />
-<!--      <configure name="GPS_BAUD"    value="B57600"/>
-    </subsystem>-->
-    <!--subsystem name="ahrs"          type="int_cmpl_euler"/-->
     <subsystem name="stabilization"   type="euler"/>
     <subsystem name="ahrs"          type="int_cmpl_euler"/>
     <subsystem name="ins"           type="hff"/>
   </firmware>
 
-  <firmware name="lisa_l_test_progs">
+  <firmware name="lisa_test_progs">
     <target name="test_led"                 board="lisa_l_1.1"/>
     <target name="test_uart"                board="lisa_l_1.1"/>
     <target name="test_servos"              board="lisa_l_1.1"/>
@@ -295,12 +326,15 @@
     <target name="test_hmc5843"             board="lisa_l_1.1"/>
     <target name="test_itg3200"             board="lisa_l_1.1"/>
     <target name="test_adxl345"             board="lisa_l_1.1"/>
+    <target name="test_adns3080"             board="lisa_l_1.1"/>
+    <target name="test_srf08"             board="lisa_l_1.1"/>
     <target name="test_esc_mkk_simple"      board="lisa_l_1.1"/>
     <target name="test_esc_asctecv1_simple" board="lisa_l_1.1"/>
     <target name="test_actuators_mkk"       board="lisa_l_1.1"/>
     <target name="test_actuators_asctecv1"  board="lisa_l_1.1"/>
     <target name="tunnel_sw"                board="lisa_l_1.1"/>
     <target name="tunnel_hw"                board="lisa_l_1.1"/>
+    <target name="test_overo"                board="lisa_l_1.1"/>
   </firmware>
 
   <firmware name="lisa_passthrough">
@@ -315,6 +349,4 @@
       <subsystem name="imu" type="b2_v1.1"/>
     </target>
  </firmware>
-
-
 </airframe>

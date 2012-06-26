@@ -29,7 +29,7 @@
 // Downlink
 #include "mcu_periph/uart.h"
 #include "messages.h"
-#include "downlink.h"
+#include "subsystems/datalink/downlink.h"
 
 #ifndef DOWNLINK_DEVICE
 #define DOWNLINK_DEVICE DOWNLINK_AP_DEVICE
@@ -73,10 +73,10 @@ void imu_impl_init(void)
 #if PERIODIC_FREQUENCY == 60
   /* set gyro range to 2000deg/s and low pass at 20Hz (< 60Hz/2) internal sampling at 1kHz */
   ppzuavimu_itg3200.buf[1] = (0x03<<3) | (0x04<<0);
-#  warning Info: ITG3200 read at 50Hz
+#  pragma message "ITG3200 read at 50Hz."
 #else
 #  if PERIODIC_FREQUENCY == 120
-#  warning Info: ITG3200 read at 100Hz
+#  pragma message "ITG3200 read at 100Hz."
   /* set gyro range to 2000deg/s and low pass at 42Hz (< 120Hz/2) internal sampling at 1kHz */
   ppzuavimu_itg3200.buf[1] = (0x03<<3) | (0x03<<0);
 #  else
@@ -117,9 +117,9 @@ void imu_impl_init(void)
   ppzuavimu_adxl345.type = I2CTransTx;
   ppzuavimu_adxl345.buf[0] = ADXL345_REG_BW_RATE;
 #if PERIODIC_FREQUENCY == 60
-  ppzuavimu_adxl345.buf[1] = 0x09;  // normal power and 50Hz sampling, 50Hz BW
+  ppzuavimu_adxl345.buf[1] = ADXL345_RATE_50;  // normal power and 50Hz sampling, 25Hz BW
 #else
-  ppzuavimu_adxl345.buf[1] = 0x0a;  // normal power and 100Hz sampling, 50Hz BW
+  ppzuavimu_adxl345.buf[1] = ADXL345_RATE_100;  // normal power and 100Hz sampling, 50Hz BW
 #endif
   ppzuavimu_adxl345.len_w = 2;
   i2c_submit(&PPZUAVIMU_I2C_DEVICE,&ppzuavimu_adxl345);
@@ -136,8 +136,7 @@ void imu_impl_init(void)
   /* Set range to 16g but keeping full resolution of 3.9 mV/g */
   ppzuavimu_adxl345.type = I2CTransTx;
   ppzuavimu_adxl345.buf[0] = ADXL345_REG_DATA_FORMAT;
-  ppzuavimu_adxl345.buf[1] = 1<<3 | 0<<2 | 0x03;  // bit 3 is full resolution bit, bit 2 is left justify bit 0,1 are range: 00=2g 01=4g 10=8g 11=16g
-  ppzuavimu_adxl345.len_w = 2;
+  ppzuavimu_adxl345.buf[1] = ADXL345_FULL_RES | ADXL345_RANGE_16G;
   i2c_submit(&PPZUAVIMU_I2C_DEVICE,&ppzuavimu_adxl345);
     while(ppzuavimu_adxl345.status == I2CTransPending);
 
@@ -200,9 +199,9 @@ void imu_periodic( void )
 
 void ppzuavimu_module_downlink_raw( void )
 {
-  DOWNLINK_SEND_IMU_GYRO_RAW(DefaultChannel,&imu.gyro_unscaled.p,&imu.gyro_unscaled.q,&imu.gyro_unscaled.r);
-  DOWNLINK_SEND_IMU_ACCEL_RAW(DefaultChannel,&imu.accel_unscaled.x,&imu.accel_unscaled.y,&imu.accel_unscaled.z);
-  DOWNLINK_SEND_IMU_MAG_RAW(DefaultChannel,&imu.mag_unscaled.x,&imu.mag_unscaled.y,&imu.mag_unscaled.z);
+  DOWNLINK_SEND_IMU_GYRO_RAW(DefaultChannel, DefaultDevice,&imu.gyro_unscaled.p,&imu.gyro_unscaled.q,&imu.gyro_unscaled.r);
+  DOWNLINK_SEND_IMU_ACCEL_RAW(DefaultChannel, DefaultDevice,&imu.accel_unscaled.x,&imu.accel_unscaled.y,&imu.accel_unscaled.z);
+  DOWNLINK_SEND_IMU_MAG_RAW(DefaultChannel, DefaultDevice,&imu.mag_unscaled.x,&imu.mag_unscaled.y,&imu.mag_unscaled.z);
 }
 
 void ppzuavimu_module_event( void )

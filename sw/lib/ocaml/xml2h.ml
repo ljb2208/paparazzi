@@ -31,7 +31,9 @@ exception Error of string
 let nl = print_newline
 
 let define = fun n x ->
-  printf "#define %s %s\n" n x
+  match x with
+      "" -> printf "#define %s\n" n
+    | _ -> printf "#define %s %s\n" n x
 
 let define_string = fun n x ->
   define n ("\""^x^"\"")
@@ -77,6 +79,6 @@ let finish = fun h_name ->
 
 let warning s =
   Printf.fprintf stderr "##################################################\n";
-  Printf.fprintf stderr "\n %s\n" s;
-  Printf.fprintf stderr "\n##################################################\n"
+  Printf.fprintf stderr " %s\n" s;
+  Printf.fprintf stderr "##################################################\n"
 

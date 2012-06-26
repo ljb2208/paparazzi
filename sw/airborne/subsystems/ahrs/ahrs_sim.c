@@ -33,6 +33,7 @@ extern float sim_theta;
 extern float sim_psi;
 extern float sim_p;
 extern float sim_q;
+extern float sim_r;
 extern bool_t ahrs_sim_available;
 
 
@@ -45,12 +46,17 @@ void update_ahrs_from_sim(void) {
 
   ahrs_float.imu_rate.p = sim_p;
   ahrs_float.imu_rate.q = sim_q;
+  ahrs_float.imu_rate.r = sim_r;
 
   /* set quaternion and rotation matrix representations as well */
   FLOAT_QUAT_OF_EULERS(ahrs_float.ltp_to_imu_quat, ahrs_float.ltp_to_imu_euler);
   FLOAT_RMAT_OF_EULERS(ahrs_float.ltp_to_imu_rmat, ahrs_float.ltp_to_imu_euler);
 
   compute_body_orientation_and_rates();
+
+#ifdef AHRS_UPDATE_FW_ESTIMATOR
+  ahrs_update_fw_estimator();
+#endif
 }
 
 
@@ -90,12 +96,20 @@ void ahrs_align(void)
 
 
 void ahrs_propagate(void) {
+  if (ahrs_sim_available) {
+    update_ahrs_from_sim();
+    ahrs_sim_available = FALSE;
+  }
 }
 
 void ahrs_update_accel(void) {
 }
 
 void ahrs_update_mag(void) {
+}
+
+void ahrs_update_gps(void) {
+
 }
 
 
@@ -134,5 +148,6 @@ void ahrs_update_fw_estimator(void)
 
   estimator_p = ahrs_float.body_rate.p;
   estimator_q = ahrs_float.body_rate.q;
+  estimator_r = ahrs_float.body_rate.r;
 }
 #endif //AHRS_UPDATE_FW_ESTIMATOR
