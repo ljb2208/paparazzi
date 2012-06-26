@@ -23,9 +23,6 @@
     <define name="SUPERVISION_SCALE" value="9600" />
   </section>
 
-  <rc_commands>
-  </rc_commands>
-
   <commands>
     <axis name="PITCH"  failsafe_value="0"/>
     <axis name="ROLL"   failsafe_value="0"/>
@@ -41,7 +38,7 @@
 -->
 
  <command_laws>
-    <let var="halfway" value="(@THRUST >= (4800) ? 1 : 0)"/>
+    <let var="tenpct" value="(@THRUST >= (1000) ? 1 : 0)"/>
 
     <let var="thrust" value="@THRUST * MAX_PPRZ / SUPERVISION_SCALE" />
     <let var="roll" value="@ROLL * MAX_PPRZ / SUPERVISION_SCALE" />
@@ -50,7 +47,7 @@
 
     <let var="collective" value="$thrust * 1.8 - (MAX_PPRZ * 0.9)" />
 
-    <set servo="ESC" value="(4800 * 1.6) + $halfway * ($thrust - 4800)  + (1 - $halfway) * ($thrust - 4800) * 1.6" />
+    <set servo="ESC" value="8000 * $tenpct" />
     <set servo="FRONT_LEFT_1" value="(($pitch)+($roll)+($yaw))+($collective)"/>
     <set servo="FRONT_RIGHT_2" value="((-$pitch)+($roll)+($yaw))+(-$collective)"/>
     <set servo="FRONT_REAR_3" value="$pitch+(-$collective)"/>
